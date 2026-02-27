@@ -49,10 +49,9 @@ export async function GET(
                 user_id: user.id,
                 entity_id: personaId,
                 action: 'document_list_by_persona',
+                entity: 'personas',
                 motivo: `Consulta de listado de documentos para persona: ${personaId}`,
                 metadata: {
-                    entity: 'personas',
-                    entity_id: personaId,
                     count: documents?.length || 0
                 }
             })

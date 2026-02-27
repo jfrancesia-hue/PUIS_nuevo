@@ -52,11 +52,10 @@ export async function PATCH(
             user_id: user.id,
             entity_id: turno.persona_id,
             action: 'turno_actualizado',
+            entity: 'turnos',
             motivo: `Cambio de estado del turno a: ${estado}`,
             metadata: {
-                entity: 'turnos',
-                entity_id: id,
-                estado_anterior: turno.estado, // Esto es el nuevo en realidad por el select posterior
+                estado_anterior: turno.estado,
                 nota
             }
         })

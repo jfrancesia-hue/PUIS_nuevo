@@ -93,10 +93,9 @@ export async function POST(req: Request) {
         user_id: user.id,
         entity_id: docData.id,
         action: 'document_uploaded',
+        entity: 'documentos',
         motivo: `Upload de documento: ${titulo}`,
         metadata: {
-          entity: 'documentos',
-          entity_id: docData.id,
           persona_id,
           tipo,
           titulo,

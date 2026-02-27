@@ -72,8 +72,9 @@ export async function POST(req: Request) {
       user_id: userData.user.id,
       entity_id: data.id,
       action: 'persona_creada',
+      entity: 'personas',
       motivo: `Alta de persona: ${data.nombre} ${data.apellido}`,
-      metadata: { entity: 'personas', entity_id: data.id, dni: data.dni }
+      metadata: { dni: data.dni }
     })
   } catch (e) {
     console.warn('Audit error:', e)

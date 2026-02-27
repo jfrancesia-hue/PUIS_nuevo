@@ -36,11 +36,11 @@ export async function PATCH(
         await supabase.from('audit_events').insert({
             tenant_id: profile.tenant_id,
             user_id: user.id,
-            accion: 'tarea_actualizada',
+            entity_id: id,
+            action: 'tarea_actualizada',
+            entity: 'tareas',
             motivo: `Actualización de tarea ID: ${id} `,
             metadata: {
-                entity: 'tareas',
-                entity_id: id,
                 estado,
                 prioridad
             }

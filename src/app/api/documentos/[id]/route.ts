@@ -51,12 +51,12 @@ export async function GET(
             await supabaseAdmin.from('audit_events').insert({
                 tenant_id,
                 user_id: user.id,
-                persona_id: document.persona_id,
-                accion: 'document_view_metadata',
+                entity_id: document.id,
+                action: 'document_view_metadata',
+                entity: 'documentos',
                 motivo: `Consulta de metadatos: ${document.titulo}`,
                 metadata: {
-                    entity: 'documentos',
-                    entity_id: document.id,
+                    persona_id: document.persona_id,
                     tipo: document.tipo
                 }
             })

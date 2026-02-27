@@ -83,11 +83,11 @@ export async function POST(req: Request) {
         await supabase.from('audit_events').insert({
             tenant_id: profile.tenant_id,
             user_id: user.id,
+            entity_id: tarea.id,
             action: 'tarea_creada',
+            entity: 'tareas',
             motivo: `Creación de tarea: ${titulo}`,
             metadata: {
-                entity: 'tareas',
-                entity_id: tarea.id,
                 tipo,
                 prioridad
             }

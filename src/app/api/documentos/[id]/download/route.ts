@@ -62,10 +62,9 @@ export async function GET(
         user_id: user.id,
         entity_id: document.id,
         action: 'document_download_signed_url',
+        entity: 'documentos',
         motivo: `Descarga de documento: ${document.titulo}`,
         metadata: {
-          entity: 'documentos',
-          entity_id: document.id,
           persona_id: document.persona_id,
           storage_path: document.storage_path
         }

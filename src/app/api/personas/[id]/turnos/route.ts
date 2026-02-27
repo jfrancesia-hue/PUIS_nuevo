@@ -88,12 +88,11 @@ export async function POST(
         await supabase.from('audit_events').insert({
             tenant_id: profile.tenant_id,
             user_id: user.id,
-            persona_id: id,
-            accion: 'turno_creado',
+            entity_id: id,
+            action: 'turno_creado',
+            entity: 'turnos',
             motivo: `Nuevo turno programado para: ${fecha_hora}`,
             metadata: {
-                entity: 'turnos',
-                entity_id: turno.id,
                 fecha_hora,
                 profesional,
                 especialidad

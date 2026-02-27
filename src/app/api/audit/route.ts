@@ -30,10 +30,10 @@ export async function POST(req: Request) {
     user_id: userData.user.id,
     entity_id,
     action: accion,
+    entity,
     motivo,
     metadata: {
-      ...body.metadata,
-      entity
+      ...body.metadata
     }
   })
 
