@@ -116,7 +116,7 @@ export default function App() {
             <ActivityIndicator size="small" color="#0067b1" />
           </View>
         )}
-      </div>
+      </View>
     </SafeAreaView>
   );
 }
