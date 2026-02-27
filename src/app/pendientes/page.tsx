@@ -171,7 +171,7 @@ export default function BandejaPendientes() {
                             className="group bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-xl hover:border-indigo-100 transition-all duration-300 relative overflow-hidden"
                         >
                             <div className={`absolute top-0 right-0 w-1.5 h-full ${tarea.prioridad === 'alta' ? 'bg-red-500' :
-                                    tarea.prioridad === 'media' ? 'bg-amber-500' : 'bg-blue-500'
+                                tarea.prioridad === 'media' ? 'bg-amber-500' : 'bg-blue-500'
                                 }`} />
 
                             <div className="flex justify-between items-start mb-4">
@@ -247,7 +247,7 @@ export default function BandejaPendientes() {
                                             setSearchTerm(e.target.value)
                                             searchPersonas(e.target.value)
                                         }}
-                                        className="w-full pl-10 pr-4 py-3.5 bg-slate-50 border-none rounded-2xl text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 shadow-inner"
+                                        className="w-full pl-10 pr-4 py-3.5 bg-slate-50 border-none rounded-2xl text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 shadow-inner text-slate-900"
                                     />
                                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm opacity-40">🔎</span>
                                 </div>
@@ -296,7 +296,7 @@ export default function BandejaPendientes() {
                                         <select
                                             value={newTask.prioridad}
                                             onChange={e => setNewTask({ ...newTask, prioridad: e.target.value })}
-                                            className="w-full bg-slate-50 border-none rounded-xl p-3 text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 shadow-inner appearance-none"
+                                            className="w-full bg-slate-50 border-none rounded-xl p-3 text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 shadow-inner appearance-none text-slate-900"
                                         >
                                             <option value="baja">Baja</option>
                                             <option value="media">Media</option>
@@ -308,7 +308,7 @@ export default function BandejaPendientes() {
                                         <select
                                             value={newTask.tipo}
                                             onChange={e => setNewTask({ ...newTask, tipo: e.target.value })}
-                                            className="w-full bg-slate-50 border-none rounded-xl p-3 text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 shadow-inner appearance-none"
+                                            className="w-full bg-slate-50 border-none rounded-xl p-3 text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 shadow-inner appearance-none text-slate-900"
                                         >
                                             <option value="administrativo">Administrativo</option>
                                             <option value="medico">Médico</option>
@@ -326,7 +326,7 @@ export default function BandejaPendientes() {
                                         value={newTask.titulo}
                                         onChange={e => setNewTask({ ...newTask, titulo: e.target.value })}
                                         placeholder="Ej: Revisión de expediente 452"
-                                        className="w-full bg-slate-50 border-none rounded-xl p-3 text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 shadow-inner"
+                                        className="w-full bg-slate-50 border-none rounded-xl p-3 text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 shadow-inner text-slate-900"
                                     />
                                 </div>
 
@@ -337,7 +337,7 @@ export default function BandejaPendientes() {
                                         value={newTask.descripcion}
                                         onChange={e => setNewTask({ ...newTask, descripcion: e.target.value })}
                                         placeholder="Detalles adicionales..."
-                                        className="w-full bg-slate-50 border-none rounded-xl p-3 text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 shadow-inner resize-none"
+                                        className="w-full bg-slate-50 border-none rounded-xl p-3 text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 shadow-inner resize-none text-slate-900"
                                     />
                                 </div>
                             </div>

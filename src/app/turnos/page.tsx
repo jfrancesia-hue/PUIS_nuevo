@@ -290,7 +290,7 @@ export default function TurnosPage() {
                                             setSearchTerm(e.target.value)
                                             searchPersonas(e.target.value)
                                         }}
-                                        className="w-full pl-12 pr-6 py-5 bg-slate-50 border-2 border-slate-50 rounded-[28px] text-lg font-black focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-600 transition-all shadow-inner placeholder:text-slate-300"
+                                        className="w-full pl-12 pr-6 py-5 bg-slate-50 border-2 border-slate-50 rounded-[28px] text-lg font-black focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-600 transition-all shadow-inner placeholder:text-slate-300 text-slate-900"
                                     />
                                     <span className="absolute left-5 top-1/2 -translate-y-1/2 text-xl opacity-30">🔍</span>
                                 </div>
@@ -343,7 +343,7 @@ export default function TurnosPage() {
                                     <select
                                         value={newTurno.especialidad}
                                         onChange={e => setNewTurno({ ...newTurno, especialidad: e.target.value })}
-                                        className="w-full bg-slate-50 border-2 border-slate-50 rounded-[24px] p-5 text-sm font-black focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-600 shadow-inner appearance-none"
+                                        className="w-full bg-slate-50 border-2 border-slate-50 rounded-[24px] p-5 text-sm font-black focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-600 shadow-inner appearance-none text-slate-900"
                                     >
                                         <option>Clínica Médica</option>
                                         <option>Cardiología</option>
@@ -359,7 +359,7 @@ export default function TurnosPage() {
                                         required
                                         value={newTurno.fecha_hora}
                                         onChange={e => setNewTurno({ ...newTurno, fecha_hora: e.target.value })}
-                                        className="w-full bg-slate-50 border-2 border-slate-50 rounded-[24px] p-5 text-sm font-black focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-600 shadow-inner"
+                                        className="w-full bg-slate-50 border-2 border-slate-50 rounded-[24px] p-5 text-sm font-black focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-600 shadow-inner text-slate-900"
                                     />
                                 </div>
                             </div>
@@ -371,7 +371,7 @@ export default function TurnosPage() {
                                     value={newTurno.nota}
                                     onChange={e => setNewTurno({ ...newTurno, nota: e.target.value })}
                                     placeholder="Detalles de la consulta..."
-                                    className="w-full bg-slate-50 border-2 border-slate-50 rounded-[24px] p-5 text-sm font-black focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-600 shadow-inner resize-none placeholder:text-slate-300"
+                                    className="w-full bg-slate-50 border-2 border-slate-50 rounded-[24px] p-5 text-sm font-black focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-600 shadow-inner resize-none placeholder:text-slate-300 text-slate-900"
                                 />
                             </div>
 

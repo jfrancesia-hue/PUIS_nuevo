@@ -1,9 +1,21 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import OnboardingRecorrido from "@/components/OnboardingRecorrido";
 import { Profile, Persona } from "@/types";
+import {
+  FileText,
+  Calendar,
+  Inbox,
+  Bot,
+  Activity,
+  Building2,
+  Layers,
+  Search,
+  ShieldCheck,
+  User,
+  ArrowRight,
+  Loader2
+} from "lucide-react";
 
 export default function Home() {
   const router = useRouter();
@@ -57,74 +69,65 @@ export default function Home() {
   const modulos = [
     {
       name: "Ficha Unificada",
-      description: "Repositorio central de historias clínicas y documentos.",
-      icon: "📋",
+      description: "Historias clínicas y documentos del paciente.",
+      icon: <FileText className="w-6 h-6" />,
       href: "/ficha-unificada",
-      color: "bg-[#0067b1]",
       roles: ['admin', 'profesional', 'administrativo']
     },
     {
       name: "Turnos y Agendas",
-      description: "Gestión de citas y disponibilidad médica.",
-      icon: "📅",
+      description: "Gestión de citas y disponibilidad clínica.",
+      icon: <Calendar className="w-6 h-6" />,
       href: "/turnos",
-      color: "bg-[#002b49]",
       roles: ['admin', 'profesional', 'administrativo']
     },
     {
       name: "Bandeja Central",
-      description: "Gestión de reclamos y expedientes pendientes.",
-      icon: "📥",
+      description: "Reclamos y expedientes pendientes.",
+      icon: <Inbox className="w-6 h-6" />,
       href: "/pendientes",
-      color: "bg-zinc-800",
       roles: ['admin', 'profesional', 'administrativo']
     },
     {
       name: "Asistente IA",
-      description: "Soporte cognitivo para toma de decisiones.",
-      icon: "🤖",
+      description: "Soporte para toma de decisiones médicas.",
+      icon: <Bot className="w-6 h-6" />,
       href: "/asistente-ia",
-      color: "bg-emerald-600",
       roles: ['admin', 'profesional']
     },
     {
       name: "Semáforo Gestión",
       description: "Monitoreo de nodos de salud en tiempo real.",
-      icon: "🚥",
+      icon: <Activity className="w-6 h-6" />,
       href: "/semaforo",
-      color: "bg-red-600",
       roles: ['admin']
     },
     {
       name: "Transparencia",
       description: "Portal de indicadores y evidencia pública.",
-      icon: "🏛️",
+      icon: <Building2 className="w-6 h-6" />,
       href: "/transparencia",
-      color: "bg-amber-500",
       roles: ['admin']
     },
     {
       name: "Unificación",
-      description: "Gestión centralizada de secretarías y SIGESA.",
-      icon: "🏢",
+      description: "Gestión de secretarías y SIGESA.",
+      icon: <Layers className="w-6 h-6" />,
       href: "/unificacion",
-      color: "bg-blue-600",
       roles: ['admin']
     },
     {
       name: "Búsqueda PRO",
-      description: "Localización avanzada de registros y expedientes.",
-      icon: "🔎",
+      description: "Localización avanzada de registros.",
+      icon: <Search className="w-6 h-6" />,
       href: "/busqueda",
-      color: "bg-sky-500",
       roles: ['admin', 'profesional', 'administrativo']
     },
     {
       name: "Registro Evidencia",
-      description: "Auditoría sistemática y blindaje de gestión.",
-      icon: "🛡️",
+      description: "Auditoría sistemática de gestión.",
+      icon: <ShieldCheck className="w-6 h-6" />,
       href: "/auditoria/evidencia",
-      color: "bg-zinc-700",
       roles: ['admin']
     }
   ];
@@ -134,55 +137,45 @@ export default function Home() {
   );
 
   const statusModulos = [
-    { name: "Ficha Unificada", status: "REAL", detail: "Conectado a Supabase API", color: "text-emerald-500" },
-    { name: "Documentación", status: "REAL", detail: "Storage S3 Operativo", color: "text-emerald-500" },
-    { name: "Recorrido Onboarding", status: "REAL", detail: "Tracking persistente activo", color: "text-emerald-500" },
-    { name: "Semáforo Gestión", status: "PARCIAL", detail: "Frontend completo, data estática", color: "text-amber-500" },
-    { name: "Portal Transparencia", status: "PARCIAL", detail: "UI funcional, requiere integración", color: "text-amber-500" },
-    { name: "Búsqueda Inteligente", status: "REAL", detail: "API pacientes integrada", color: "text-emerald-500" },
-    { name: "Asistente IA", status: "EN CONSTRUCCIÓN", detail: "Base de conocimientos pendiente", color: "text-zinc-400" },
-    { name: "Diagnóstico Sistema", status: "REAL", detail: "Panel de salud pro-activo", color: "text-emerald-500" },
+    { name: "Ficha Unificada", status: "REAL", detail: "Conectado a Nodo Central", color: "text-emerald-600" },
+    { name: "Documentación", status: "REAL", detail: "Repositorio Digital Operativo", color: "text-emerald-600" },
+    { name: "Turnos", status: "REAL", detail: "Agenda Sincronizada", color: "text-emerald-600" },
+    { name: "Bandeja", status: "REAL", detail: "Gestión de Expedientes", color: "text-emerald-600" },
+    { name: "Semáforo Gestión", status: "PARCIAL", detail: "Indicadores en despliegue", color: "text-amber-600" },
+    { name: "Asistente IA", status: "PROTOTIPO", detail: "En fase de entrenamiento", color: "text-slate-400" },
   ];
 
   return (
-    <div className="space-y-12 animate-fade-in max-w-6xl mx-auto py-8">
-      {/* Welcome Section */}
-      <section className="bg-[#002b49] rounded-[48px] p-12 text-white relative overflow-hidden shadow-2xl border-b-8 border-[#f9b000]">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[#0067b1]/20 rounded-full -mr-32 -mt-32 blur-3xl" />
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
-          <div className="space-y-4">
-            <div className="px-4 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-[10px] font-black uppercase tracking-[0.3em] inline-block">
-              Sistema Operativo de Salud
-            </div>
-            <h1 className="text-5xl font-black tracking-tighter uppercase font-outfit">
-              Bienvenido al <span className="text-sky-400">PUIS</span>
-            </h1>
-            <p className="text-zinc-400 text-lg font-bold max-w-xl leading-relaxed">
-              Plataforma Unificada de Información en Salud de la Provincia de Catamarca. Inicie la gestión seleccionando un módulo.
-            </p>
+    <div className="space-y-10 animate-fade-in max-w-6xl mx-auto py-6">
+      {/* Institutional Hero */}
+      <section className="bg-brand-navy rounded-3xl p-10 text-white shadow-sm overflow-hidden">
+        <div className="relative z-10 space-y-4">
+          <div className="flex items-center gap-3 mb-2">
+            <span className="px-3 py-1 rounded-full bg-white/10 border border-white/20 text-[10px] font-bold uppercase tracking-widest text-white/80">
+              Gestión Gubernamental
+            </span>
           </div>
-          <div className="flex -space-x-4">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="w-16 h-16 rounded-2xl bg-zinc-800 border-4 border-[#002b49] flex items-center justify-center text-xl grayscale opacity-50">
-                🛡️
-              </div>
-            ))}
-          </div>
+          <h1 className="text-4xl font-bold tracking-tight">
+            Plataforma Unificada de Información en Salud
+          </h1>
+          <p className="text-white/70 text-lg font-medium max-w-2xl leading-relaxed">
+            Catamarca Salud. Acceso integrado a la gestión clínica, administrativa y estratégica del sistema provincial.
+          </p>
         </div>
       </section>
 
-      {/* Recorrido de Primer Uso */}
+      {/* Onboarding */}
       <OnboardingRecorrido />
 
-      {/* Buscador de Personas - Card Superior */}
-      <section className="bg-white rounded-[48px] p-10 border border-zinc-100 shadow-2xl space-y-8 mx-4">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <h2 className="text-3xl font-black tracking-tighter uppercase font-outfit">Búsqueda de Personas</h2>
-            <p className="text-zinc-500 text-[10px] font-black uppercase tracking-[0.3em]">Acceso rápido a Ficha Unificada</p>
+      {/* Main Search */}
+      <section className="admin-card p-8 space-y-6">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-brand-navy/5 flex items-center justify-center text-brand-navy">
+            <Search className="w-6 h-6" />
           </div>
-          <div className="w-16 h-16 rounded-2xl bg-sky-500/10 flex items-center justify-center text-3xl">
-            🔎
+          <div>
+            <h2 className="text-xl font-bold text-slate-900">Búsqueda Unificada de Pacientes</h2>
+            <p className="text-slate-500 text-xs font-medium uppercase tracking-wider">Acceso directo a Ficha Clínica</p>
           </div>
         </div>
 
@@ -191,50 +184,38 @@ export default function Home() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Ingrese DNI o Apellido..."
-            className="w-full px-10 py-6 rounded-[32px] bg-zinc-50 border-2 border-zinc-100 focus:border-[#0067b1] outline-none text-xl font-bold transition-all shadow-inner"
+            placeholder="Ingrese DNI, Apellido o ID de Ficha..."
+            className="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-100 focus:border-brand-navy focus:ring-4 focus:ring-brand-navy/5 outline-none text-lg font-semibold transition-all text-slate-900 placeholder:text-slate-400"
           />
           {isSearching && (
             <div className="absolute right-6 top-1/2 -translate-y-1/2">
-              <div className="w-6 h-6 border-4 border-[#0067b1]/30 border-t-[#0067b1] rounded-full animate-spin" />
+              <Loader2 className="w-5 h-5 text-brand-navy animate-spin" />
             </div>
           )}
         </div>
 
-        {/* Ejemplos de búsqueda */}
-        <div className="flex flex-wrap gap-2 px-4">
-          <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mr-2">Ejemplos:</span>
-          {['20123456', '30111222', '27123456', '35999888'].map(dni => (
-            <button
-              key={dni}
-              onClick={() => setSearchQuery(dni)}
-              className="px-3 py-1 rounded-full bg-zinc-100 hover:bg-[#0067b1] hover:text-white transition-all text-[9px] font-bold text-zinc-500 uppercase tracking-tight"
-            >
-              {dni}
-            </button>
-          ))}
-        </div>
-
+        {/* Search Results */}
         {searchResults.length > 0 && (
-          <div className="space-y-4 animate-in fade-in slide-in-from-top-4 duration-500">
+          <div className="space-y-3 pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
             {searchResults.map((p) => (
-              <div key={p.id} className="p-6 rounded-[32px] bg-white border border-zinc-100 flex items-center justify-between gap-6 hover:border-[#0067b1] hover:shadow-xl transition-all group">
-                <div className="flex items-center gap-6">
-                  <div className="w-14 h-14 rounded-2xl bg-zinc-50 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                    👤
+              <div key={p.id} className="p-4 rounded-xl border border-slate-100 bg-white flex items-center justify-between gap-4 hover:border-brand-navy transition-all group">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-brand-navy/5 group-hover:text-brand-navy transition-colors">
+                    <User className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-black text-zinc-900 uppercase font-outfit">{p.nombre} {p.apellido}</h3>
-                    <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">
-                      DNI: <span className="text-zinc-900">{p.dni}</span> • {p.fecha_nacimiento ? `${new Date().getFullYear() - new Date(p.fecha_nacimiento).getFullYear()} años` : "N/A"}
+                    <h3 className="font-bold text-slate-900">{p.nombre} {p.apellido}</h3>
+                    <p className="text-xs font-semibold text-slate-500">
+                      DNI {p.dni} • {p.fecha_nacimiento ? `${new Date().getFullYear() - new Date(p.fecha_nacimiento).getFullYear()} años` : "N/A"}
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => router.push(`/ficha-unificada?personaId=${p.id}`)}
-                  className="px-8 py-4 rounded-2xl bg-[#0067b1] text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-[#0067b1]/20 hover:bg-[#005694] active:scale-95 transition-all"
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-navy text-white text-[11px] font-bold uppercase tracking-wider hover:bg-brand-navy-2 transition-all shadow-sm"
                 >
-                  Abrir Ficha ➔
+                  Abrir Ficha
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             ))}
@@ -242,58 +223,53 @@ export default function Home() {
         )}
 
         {searchQuery.length >= 3 && searchResults.length === 0 && !isSearching && (
-          <div className="py-10 text-center opacity-50">
-            <p className="text-zinc-500 font-black uppercase tracking-[0.2em] text-xs">No se encontraron resultados para "{searchQuery}"</p>
+          <div className="py-6 text-center">
+            <p className="text-slate-400 font-bold uppercase tracking-wider text-[10px]">Sin resultados para "{searchQuery}"</p>
           </div>
         )}
       </section>
 
-      {/* Grid of Modules */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
+      {/* Service Panels */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredModulos.map((modulo) => (
-          <a key={modulo.name} href={modulo.href} className="group relative bg-white p-10 rounded-[40px] border border-zinc-100 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden flex items-center gap-8">
-            <div className={`absolute top-0 right-0 w-2 h-full ${modulo.color} group-hover:w-4 transition-all`} />
-            <div className={`w-20 h-20 rounded-[28px] ${modulo.color} text-white flex items-center justify-center text-4xl shadow-lg shadow-zinc-200 group-hover:rotate-6 transition-transform`}>
+          <a key={modulo.name} href={modulo.href} className="admin-card p-6 flex items-start gap-4 hover:border-brand-navy hover:bg-slate-50/50 transition-all group">
+            <div className="w-12 h-12 rounded-xl bg-slate-50 text-brand-navy flex items-center justify-center group-hover:bg-brand-navy group-hover:text-white transition-all shadow-sm">
               {modulo.icon}
             </div>
-            <div className="flex-1">
-              <h3 className="text-2xl font-black text-zinc-900 tracking-tighter uppercase">{modulo.name}</h3>
-              <p className="text-zinc-500 text-xs font-bold mt-1 uppercase tracking-widest opacity-60 leading-relaxed">{modulo.description}</p>
+            <div className="flex-1 space-y-1">
+              <h3 className="text-lg font-bold text-slate-900 group-hover:text-brand-navy transition-colors">{modulo.name}</h3>
+              <p className="text-slate-500 text-xs font-medium leading-relaxed">{modulo.description}</p>
             </div>
           </a>
         ))}
       </div>
 
-      {/* Module Status Board (Visible only for Admin) */}
+      {/* Admin Board */}
       {profile?.rol === 'admin' && (
-        <section className="bg-zinc-900 rounded-[48px] p-12 text-white shadow-2xl space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-1000">
+        <section className="admin-card bg-slate-900 border-none p-10 text-white space-y-6">
           <div className="flex items-center justify-between border-b border-white/10 pb-6">
             <div className="space-y-1">
-              <h2 className="text-2xl font-black tracking-tighter uppercase">Estado de Módulos</h2>
-              <p className="text-zinc-500 text-[10px] font-black uppercase tracking-[0.3em]">Mapa Realista de Capacidades del Sistema</p>
+              <h2 className="text-xl font-bold tracking-tight">Estado de Operaciones</h2>
+              <p className="text-white/40 text-[10px] font-bold uppercase tracking-[0.2em]">Mapa de Capacidades del Sistema</p>
             </div>
-            <div className="px-5 py-2 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-[10px] font-black uppercase tracking-widest">
-              Protocolo Industrial PUIS
+            <div className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/60 text-[10px] font-bold uppercase tracking-wider">
+              Protocolo Industrial
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {statusModulos.map((m) => (
-              <div key={m.name} className="flex items-center justify-between p-6 rounded-3xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
-                <div className="space-y-1">
-                  <p className="text-xs font-black uppercase tracking-tight">{m.name}</p>
-                  <p className="text-[10px] text-zinc-500 font-bold">{m.detail}</p>
-                </div>
-                <div className="text-right">
-                  <p className={`text-[10px] font-black uppercase tracking-widest ${m.color}`}>{m.status}</p>
+              <div key={m.name} className="p-4 rounded-xl bg-white/5 border border-white/5 flex flex-col justify-between h-24">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-white/80">{m.name}</p>
+                <div className="flex items-center justify-between">
+                  <p className="text-[10px] text-white/40 font-medium">{m.detail}</p>
+                  <p className={`text-[9px] font-bold uppercase tracking-widest ${m.color}`}>{m.status}</p>
                 </div>
               </div>
             ))}
           </div>
         </section>
       )}
-
     </div>
   );
 }
-

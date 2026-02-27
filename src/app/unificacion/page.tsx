@@ -170,7 +170,7 @@ export default function UnificacionDirecciones() {
                         <input
                             type="text"
                             placeholder="Buscar por dirección o funcionario..."
-                            className="w-full px-8 py-5 rounded-3xl bg-zinc-50 border border-zinc-100 shadow-sm focus:ring-4 focus:ring-[#0067b1]/5 focus:border-[#0067b1] outline-none transition-all font-bold text-sm"
+                            className="w-full px-8 py-5 rounded-3xl bg-zinc-50 border border-zinc-100 shadow-sm focus:ring-4 focus:ring-[#0067b1]/5 focus:border-[#0067b1] outline-none transition-all font-bold text-sm text-slate-900"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                         />

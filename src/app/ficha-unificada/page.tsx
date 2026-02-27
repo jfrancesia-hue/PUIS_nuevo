@@ -3,6 +3,28 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Persona, Turno, Documento, Profile } from "@/types";
+import {
+    Search,
+    User,
+    Calendar,
+    Clock,
+    ArrowRight,
+    AlertCircle,
+    ShieldCheck,
+    FileText,
+    History,
+    ClipboardList,
+    FileStack,
+    FlaskConical,
+    Syringe,
+    Plus,
+    RefreshCw,
+    Download,
+    Eye,
+    Lock,
+    Zap,
+    Building2
+} from "lucide-react";
 
 export default function FichaUnificada() {
     const searchParams = useSearchParams();
@@ -44,7 +66,6 @@ export default function FichaUnificada() {
 
     const checkSession = async () => {
         try {
-            // Fetch User
             const resAuth = await fetch('/api/auth/me');
             const dataAuth = await resAuth.json();
             if (!dataAuth.ok || !dataAuth.user) {
@@ -53,7 +74,6 @@ export default function FichaUnificada() {
             }
             setUser(dataAuth.user);
 
-            // Fetch Profile (with Role)
             const resProf = await fetch('/api/profile/me');
             const dataProf = await resProf.json();
             if (dataProf.ok) {
@@ -153,7 +173,6 @@ export default function FichaUnificada() {
     const fetchPatient = async () => {
         setLoading(true);
         try {
-            console.log(`[DEV] Fetching patient: /api/personas/${personaId}`);
             const res = await fetch(`/api/personas/${personaId}`);
             if (!res.ok) throw new Error(`Status: ${res.status}`);
             const data = await res.json();
@@ -161,7 +180,7 @@ export default function FichaUnificada() {
                 setPatient(data.item);
             }
         } catch (error) {
-            console.error("[DEV] Fetch patient error:", error);
+            console.error("Fetch patient error:", error);
         } finally {
             setLoading(false);
         }
@@ -171,16 +190,14 @@ export default function FichaUnificada() {
         if (!personaId) return;
         setLoadingDocs(true);
         try {
-            console.log(`[DEV] Fetching documents: /api/personas/${personaId}/documentos`);
             const res = await fetch(`/api/personas/${personaId}/documentos`);
             if (!res.ok) throw new Error(`Status: ${res.status}`);
             const data = await res.json();
             if (data.ok && data.items) {
                 setDocuments(data.items);
-                localStorage.setItem('puis_step_docs_listed', 'true');
             }
         } catch (error) {
-            console.error("[DEV] Fetch docs error:", error);
+            console.error("Fetch docs error:", error);
         } finally {
             setLoadingDocs(false);
         }
@@ -207,7 +224,6 @@ export default function FichaUnificada() {
                 setUploadTitle("");
                 setUploadFile(null);
                 fetchDocuments();
-                localStorage.setItem('puis_step_docs_uploaded', 'true');
                 alert("Documento subido con éxito");
             } else {
                 alert("Error: " + (data.error || "Desconocido"));
@@ -225,7 +241,6 @@ export default function FichaUnificada() {
             const data = await res.json();
             if (data.signedUrl) {
                 window.open(data.signedUrl, '_blank');
-                localStorage.setItem('puis_step_docs_downloaded', 'true');
             } else {
                 alert("No se pudo obtener el enlace de descarga");
             }
@@ -244,7 +259,6 @@ export default function FichaUnificada() {
         setAuditApiError("");
 
         try {
-            console.log(`[DEV] Sending audit log for: ${personaId}`);
             const res = await fetch('/api/audit', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -263,7 +277,7 @@ export default function FichaUnificada() {
 
             setShowAuditModal(false);
         } catch (error: any) {
-            console.error("[DEV] Audit log error:", error);
+            console.error("Audit log error:", error);
             setAuditApiError(error.message || "Error al validar identidad. Intente nuevamente.");
         } finally {
             setIsAuditing(false);
@@ -272,10 +286,10 @@ export default function FichaUnificada() {
 
     if (loading && !showAuditModal) {
         return (
-            <div className="min-h-screen flex items-center justify-center font-outfit">
-                <div className="flex flex-col items-center gap-6 animate-pulse">
-                    <div className="w-16 h-16 rounded-full border-4 border-[#0067b1]/30 border-t-[#0067b1] animate-spin" />
-                    <p className="text-[#0067b1] text-xs font-black uppercase tracking-widest">Recuperando Historial Digital...</p>
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="flex flex-col items-center gap-4">
+                    <RefreshCw className="w-10 h-10 text-brand-navy animate-spin" />
+                    <p className="text-brand-navy text-xs font-bold uppercase tracking-widest">Sincronizando Historial Clínico...</p>
                 </div>
             </div>
         );
@@ -283,337 +297,350 @@ export default function FichaUnificada() {
 
     if (!patient && !loading && !showAuditModal) {
         return (
-            <div className="text-center py-20 font-outfit">
-                <p className="text-zinc-400 font-bold uppercase tracking-widest text-xs">No se encontró el paciente solicitado</p>
-                <div className="mt-6">
+            <div className="text-center py-20 px-4">
+                <div className="max-w-md mx-auto admin-card p-10 space-y-6">
+                    <AlertCircle className="w-12 h-12 text-slate-300 mx-auto" />
+                    <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">No se encontró el registro solicitado</p>
                     <button
                         onClick={() => router.push('/ficha-unificada?id=8903f85b-c12a-403d-a9fa-8bc709f077c8')}
-                        className="px-6 py-3 bg-[#0067b1] text-white rounded-xl font-bold uppercase text-[10px] tracking-widest"
+                        className="w-full btn-primary py-3 text-[10px]"
                     >Cargar Registro Sugerido</button>
                 </div>
             </div>
         );
     }
 
-    // Merge real data into layout...
     const patientData = patient ? {
         name: `${patient.nombre} ${patient.apellido}`,
         dni: patient.dni,
         age: patient.fecha_nacimiento ? `${new Date().getFullYear() - new Date(patient.fecha_nacimiento).getFullYear()} años` : "N/A",
-        status: "Registrado",
-        allergies: "No registradas",
-        center: "Hospital Provincial",
+        status: "Activo",
+        center: "Sistema Provincial de Salud",
         obs: ["Registro oficial del Ministerio de Salud."]
     } : null;
 
     const timeline = patient ? [
         ...(patient.turnos || []).map((t: any) => ({
             date: new Date(t.fecha).toLocaleDateString(),
-            title: `Turno: ${t.especialidad}`,
+            title: `Atención: ${t.especialidad}`,
             doctor: t.profesional,
-            clinic: "Centro de Salud",
-            color: "bg-[#0067b1]",
-            details: t.notas || `Atención programada - Estado: ${t.estado}`
+            clinic: "Efector Público",
+            icon: <ClipboardList className="w-5 h-5" />,
+            color: "bg-brand-navy",
+            details: t.notas || `Estado: ${t.estado}`
         })),
         ...(patient.reclamos || []).map((r: any) => ({
             date: new Date(r.created_at).toLocaleDateString(),
             title: `Reclamo: ${r.categoria}`,
-            doctor: "Sistema",
+            doctor: "Gestión Administrativa",
             clinic: "Atención Ciudadana",
-            color: "bg-red-500",
-            details: r.descripcion || `Urgencia: ${r.urgencia} - Estado: ${r.estado}`
+            icon: <AlertCircle className="w-5 h-5" />,
+            color: "bg-red-600",
+            details: r.descripcion || `Urgencia: ${r.urgencia}`
         }))
     ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) : [];
 
     return (
-        <div className="space-y-10 animate-fade-in font-outfit pb-20 max-w-6xl mx-auto px-4 pt-4">
+        <div className="space-y-8 animate-fade-in max-w-7xl mx-auto px-4 py-6">
             {/* AUDIT MODAL */}
             {showAuditModal && (
-                <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-[#002b49]/95 backdrop-blur-2xl animate-fade-in">
-                    <div className="bg-white w-full max-w-xl rounded-[48px] shadow-2xl overflow-hidden border-8 border-[#0067b1]/10 transform scale-100 transition-transform">
-                        <div className="p-10 bg-[#0067b1] text-white space-y-2 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16" />
-                            <h3 className="text-3xl font-black tracking-tighter uppercase relative z-10">Protocolo de Acceso</h3>
-                            <p className="text-[10px] font-black uppercase tracking-widest opacity-60 italic relative z-10">Seguridad Ministerial • Ley 25.326</p>
+                <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md">
+                    <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-slate-200">
+                        <div className="p-8 bg-brand-navy text-white space-y-1">
+                            <h3 className="text-2xl font-bold tracking-tight">Protocolo de Acceso Seguro</h3>
+                            <p className="text-[10px] font-bold uppercase tracking-widest opacity-60">Ley 25.326 • Seguridad de la Información</p>
                         </div>
-                        <div className="p-10 space-y-8">
-                            <div className="space-y-4">
-                                <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-4">Motivo de Consulta Obligatorio</label>
+                        <div className="p-8 space-y-6">
+                            <div className="space-y-3">
+                                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block ml-1">Motivo de Visualización</label>
                                 <textarea
                                     value={auditReason}
                                     onChange={(e) => { setAuditReason(e.target.value); setAuditError(false); setAuditApiError(""); }}
-                                    placeholder="Ej: Auditoría de documentación para derivación a especialista..."
-                                    className={`w-full h-32 px-8 py-6 rounded-3xl bg-white border-2 ${auditError || auditApiError ? 'border-red-500 bg-red-50' : 'border-zinc-100'} focus:border-[#0067b1] outline-none transition-all font-bold text-lg text-slate-900 placeholder:text-slate-400 resize-none shadow-inner`}
+                                    placeholder="Describa el motivo de la consulta..."
+                                    className={`w-full h-32 px-5 py-4 rounded-2xl bg-slate-50 border ${auditError || auditApiError ? 'border-red-500 bg-red-50' : 'border-slate-200'} focus:border-brand-navy outline-none transition-all font-semibold text-slate-900 placeholder:text-slate-400 resize-none shadow-sm`}
                                 />
                                 {(auditError || auditApiError) && (
-                                    <p className="text-red-500 text-[10px] font-black uppercase tracking-widest ml-4 animate-bounce">
-                                        {auditApiError || "Ingrese un motivo válido (mín. 5 caracteres)"}
+                                    <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest ml-1">
+                                        {auditApiError || "Campo obligatorio (mín. 5 caracteres)"}
                                     </p>
                                 )}
                             </div>
-                            <div className="p-6 rounded-3xl bg-zinc-50 flex items-center gap-4 border border-zinc-100 shadow-sm">
-                                <span className="text-2xlgrayscale">👁️</span>
-                                <p className="text-[10px] font-bold text-zinc-500 leading-relaxed uppercase tracking-widest">
-                                    Esta consulta será registrada con su usuario <span className="text-[#0067b1] font-black">{user?.email || 'N/A'}</span>.
+                            <div className="p-4 rounded-xl bg-slate-50 flex items-center gap-3 border border-slate-100">
+                                <Lock className="w-5 h-5 text-brand-navy" />
+                                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                                    Acceso auditado para: <span className="text-brand-navy">{user?.email || 'N/A'}</span>
                                 </p>
                             </div>
-                            <button
-                                onClick={handleConfirmAudit}
-                                disabled={isAuditing}
-                                className={`w-full py-6 rounded-3xl bg-[#0067b1] text-white font-black uppercase tracking-[0.3em] text-xs shadow-xl transition-all transform active:scale-95 flex items-center justify-center gap-3 ${isAuditing ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#005694]'}`}
-                            >
-                                {isAuditing ? (
-                                    <>
-                                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                        Validando...
-                                    </>
-                                ) : (
-                                    "Validar Identidad y Abrir ➔"
-                                )}
-                            </button>
+                            <div className="flex flex-col gap-2">
+                                <button
+                                    onClick={handleConfirmAudit}
+                                    disabled={isAuditing}
+                                    className={`w-full btn-primary py-4 uppercase tracking-[0.2em] text-[11px] flex items-center justify-center gap-2 ${isAuditing ? 'opacity-70' : ''}`}
+                                >
+                                    {isAuditing ? <RefreshCw className="w-4 h-4 animate-spin" /> : "Validar y Continuar"}
+                                </button>
+                                <button
+                                    onClick={() => router.push('/')}
+                                    className="w-full py-3 text-slate-400 font-bold uppercase tracking-widest text-[9px] hover:text-slate-600 transition-all"
+                                >
+                                    Cancelar Acceso
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             )}
 
             {/* Header / Search Area */}
-            <section className="bg-white rounded-[40px] p-10 border border-zinc-100 shadow-2xl shadow-zinc-200/50 space-y-8">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div>
-                        <h1 className="text-4xl font-black tracking-tighter text-zinc-900 leading-none">
-                            FICHA <span className="text-[#0067b1]">UNIFICADA</span>
-                        </h1>
-                        <p className="text-zinc-500 font-bold text-xs uppercase tracking-widest mt-3">Repositorio Central de Salud • Nodo Catamarca</p>
+            <section className="admin-card p-6 space-y-6">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-brand-navy/5 flex items-center justify-center text-brand-navy">
+                            <History className="w-6 h-6" />
+                        </div>
+                        <div>
+                            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Ficha Unificada del Paciente</h1>
+                            <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Registro Público • Provincia de Catamarca</p>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-2 px-6 py-3 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-black uppercase tracking-widest">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        Sesión Activa
+                    <div className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-bold uppercase tracking-wider">
+                        <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+                        Conexión Segura
                     </div>
                 </div>
 
-                <div className="h-px bg-zinc-100 w-full" />
-
-                <div className="flex flex-col md:flex-row items-end gap-6 bg-zinc-50 p-6 rounded-3xl border border-zinc-100">
+                <div className="flex flex-col md:flex-row items-end gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
                     <div className="flex-1 space-y-2">
-                        <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-4">ID de Persona / DNI</label>
-                        <input
-                            type="text"
-                            defaultValue={personaId || "8903f85b-c12a-403d-a9fa-8bc709f077c8"}
-                            id="search-input"
-                            className="w-full px-8 py-5 rounded-[24px] bg-white border-2 border-zinc-100 focus:border-[#0067b1] outline-none font-bold text-xl shadow-sm transition-all"
-                            placeholder="Ingrese ID o DNI..."
-                        />
+                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Identificador de Registro o DNI</label>
+                        <div className="relative group">
+                            <input
+                                type="text"
+                                defaultValue={personaId || ""}
+                                id="search-input"
+                                className="w-full pl-12 pr-6 py-4 rounded-xl bg-white border border-slate-200 focus:border-brand-navy outline-none font-bold text-lg text-slate-900 shadow-sm transition-all"
+                                placeholder="DNI o UUID..."
+                            />
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                        </div>
                     </div>
                     <button
                         onClick={() => {
                             const val = (document.getElementById('search-input') as HTMLInputElement).value;
                             if (val) router.push(`/ficha-unificada?id=${val}`);
                         }}
-                        className="px-10 py-5 rounded-[24px] bg-[#0067b1] text-white font-black uppercase tracking-widest text-xs shadow-xl hover:bg-[#005694] transition-all transform active:scale-95 h-[64px]"
+                        className="btn-primary flex items-center gap-2 px-8 py-[18px] text-[11px] h-[60px]"
                     >
-                        Abrir Ficha 🔍
+                        Acceder
+                        <ArrowRight className="w-4 h-4" />
                     </button>
                     <button
                         onClick={() => router.push('/ficha-unificada?id=8903f85b-c12a-403d-a9fa-8bc709f077c8')}
-                        className="px-6 py-5 rounded-[24px] bg-zinc-200 text-zinc-600 font-black uppercase tracking-widest text-[9px] hover:bg-zinc-300 transition-all h-[64px]"
+                        className="px-6 py-[18px] rounded-xl bg-slate-200 text-slate-600 font-bold uppercase tracking-wider text-[10px] hover:bg-slate-300 transition-all h-[60px]"
                     >
-                        Registro Sugerido
+                        Registro de Prueba
                     </button>
                 </div>
             </section>
 
             {patientData ? (
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
-                    {/* Left Panel: Patient Summary */}
-                    <div className="lg:col-span-1 space-y-6">
-                        <div className="bg-white rounded-[40px] p-8 border border-zinc-100 shadow-xl relative overflow-hidden text-center">
-                            <div className="w-32 h-32 rounded-[32px] bg-zinc-50 mx-auto flex items-center justify-center text-5xl mb-6 shadow-inner border border-zinc-100">
-                                👤
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    {/* Left Sidebar: Brief Info */}
+                    <div className="lg:col-span-3 space-y-6">
+                        <div className="admin-card p-6 text-center space-y-6 relative overflow-hidden">
+                            <div className="w-24 h-24 rounded-2xl bg-slate-50 border border-slate-100 mx-auto flex items-center justify-center text-slate-400 shadow-inner">
+                                <User className="w-12 h-12" />
                             </div>
-                            <h2 className="text-2xl font-black text-zinc-900 tracking-tighter uppercase">{patientData.name}</h2>
-                            <p className="text-[10px] font-black text-[#0067b1] tracking-[0.2em] mt-2 border-y py-2 border-zinc-50">DNI: {patientData.dni}</p>
+                            <div className="space-y-1">
+                                <h2 className="text-xl font-bold text-slate-900 uppercase tracking-tight">{patientData.name}</h2>
+                                <p className="text-[11px] font-bold text-brand-navy uppercase tracking-widest bg-brand-navy/5 inline-block px-3 py-1 rounded-full">DNI: {patientData.dni}</p>
+                            </div>
 
-                            <div className="mt-8 space-y-4 text-left">
+                            <div className="space-y-3 text-left pt-4">
                                 {[
-                                    { label: "Edad", val: patientData.age },
-                                    { label: "Estado Civ.", val: "N/A" },
-                                    { label: "Origen", val: patientData.center }
+                                    { label: <><Clock className="w-3.5 h-3.5" /> Edad</>, val: patientData.age },
+                                    { label: <><ShieldCheck className="w-3.5 h-3.5" /> Estado</>, val: patientData.status },
+                                    { label: <><Building2 className="w-3.5 h-3.5" /> Centro</>, val: "M.S.P. Catamarca" }
                                 ].map((row, i) => (
-                                    <div key={i} className="flex justify-between items-center py-2 border-b border-dashed border-zinc-100">
-                                        <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">{row.label}</span>
-                                        <span className="text-[10px] font-black text-zinc-700 uppercase">{row.val}</span>
+                                    <div key={i} className="flex justify-between items-center py-2.5 border-b border-slate-50">
+                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">{row.label}</span>
+                                        <span className="text-[11px] font-bold text-slate-700 uppercase">{row.val}</span>
                                     </div>
                                 ))}
                             </div>
                         </div>
 
-                        <div className="bg-[#002b49] rounded-[32px] p-8 text-white space-y-6 shadow-xl">
-                            <h3 className="text-[10px] font-black text-sky-400 uppercase tracking-[0.3em]">Gestión Rápida</h3>
-                            <div className="grid grid-cols-2 gap-3">
-                                {['Turno', 'Nota', 'Alerta', 'PDF'].map((btn) => (
-                                    <button key={btn} className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-[#f9b000] hover:text-[#002b49] hover:border-[#f9b000] transition-all font-black text-[10px] uppercase tracking-widest flex flex-col items-center gap-2 group">
-                                        <span className="text-lg group-hover:scale-125 transition-transform">⚡</span>
-                                        {btn}
+                        <div className="admin-card bg-brand-navy p-6 text-white space-y-4 shadow-md">
+                            <h3 className="text-[10px] font-bold uppercase tracking-widest text-white/50 border-b border-white/10 pb-2">Acciones Rápidas</h3>
+                            <div className="grid grid-cols-2 gap-2">
+                                {[
+                                    { name: "Cita", icon: <Calendar className="w-4 h-4" /> },
+                                    { name: "Nota", icon: <FileText className="w-4 h-4" /> },
+                                    { name: "Soporte", icon: <Zap className="w-4 h-4" /> },
+                                    { name: "PDF", icon: <Download className="w-4 h-4" /> }
+                                ].map((btn) => (
+                                    <button key={btn.name} className="flex flex-col items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all text-white">
+                                        {btn.icon}
+                                        <span className="font-bold text-[9px] uppercase tracking-wider">{btn.name}</span>
                                     </button>
                                 ))}
                             </div>
                         </div>
                     </div>
 
-                    {/* Right Panel: Tabs and Detailed Data */}
-                    <div className="lg:col-span-3 space-y-8">
+                    {/* Right Main Panel: Detail Tabs */}
+                    <div className="lg:col-span-9 space-y-6">
                         {/* Tab Switcher */}
-                        <div className="flex items-center gap-8 bg-white p-2 rounded-[28px] border border-zinc-100 shadow-lg overflow-x-auto no-scrollbar">
-                            {['Cronología', 'Turnos', 'Documentos', 'Estudios', 'Vacunas'].map(tab => (
+                        <div className="flex items-center gap-6 bg-white p-1.5 rounded-2xl border border-slate-100 shadow-sm overflow-x-auto no-scrollbar">
+                            {[
+                                { name: 'Cronología', icon: <History className="w-4 h-4" /> },
+                                { name: 'Turnos', icon: <Calendar className="w-4 h-4" /> },
+                                { name: 'Documentos', icon: <FileStack className="w-4 h-4" /> },
+                                { name: 'Estudios', icon: <FlaskConical className="w-4 h-4" /> },
+                                { name: 'Vacunas', icon: <Syringe className="w-4 h-4" /> }
+                            ].map(tab => (
                                 <button
-                                    key={tab}
-                                    onClick={() => setActiveTab(tab)}
-                                    className={`px-8 py-4 rounded-[20px] text-[11px] font-black uppercase tracking-[0.2em] transition-all whitespace-nowrap ${activeTab === tab ? "bg-[#0067b1] text-white shadow-lg shadow-[#0067b1]/30 rotate-1 scale-105" : "text-zinc-400 hover:text-zinc-600 hover:bg-zinc-50"}`}
+                                    key={tab.name}
+                                    onClick={() => setActiveTab(tab.name)}
+                                    className={`flex items-center gap-2 px-6 py-3 rounded-xl text-[11px] font-bold uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === tab.name ? "bg-brand-navy text-white shadow-md shadow-brand-navy/20" : "text-slate-400 hover:text-slate-600 hover:bg-slate-50"}`}
                                 >
-                                    {tab}
+                                    {tab.icon}
+                                    {tab.name}
                                 </button>
                             ))}
                         </div>
 
-                        {/* Tab Content */}
-                        <div className="min-h-[500px]">
+                        <div className="py-6 min-h-[500px]">
                             {activeTab === 'Cronología' && (
-                                <div className="space-y-8">
+                                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
                                     {timeline.length > 0 ? timeline.map((event, i) => (
-                                        <div key={i} className="flex gap-8 group">
+                                        <div key={i} className="flex gap-6 group">
                                             <div className="flex flex-col items-center">
-                                                <div className={`w-12 h-12 rounded-2xl ${event.color} flex items-center justify-center text-white text-[10px] font-black shadow-lg shadow-zinc-200`}>
-                                                    {event.date.split('/')[0]}
+                                                <div className={`w-10 h-10 rounded-xl ${event.color} flex items-center justify-center text-white shadow-md`}>
+                                                    {event.icon}
                                                 </div>
-                                                <div className="w-1 flex-1 bg-zinc-100 my-2 rounded-full" />
+                                                <div className="w-0.5 flex-1 bg-slate-100 my-2 rounded-full" />
                                             </div>
-                                            <div className="flex-1 bg-white p-8 rounded-[36px] border border-zinc-100 shadow-xl hover:border-[#0067b1] transition-all group-hover:translate-x-2">
-                                                <h4 className="text-xl font-black text-zinc-900 tracking-tight mb-2 uppercase">{event.title}</h4>
-                                                <p className="text-zinc-500 text-sm font-bold leading-relaxed mb-6 italic opacity-80">"{event.details}"</p>
-                                                <div className="flex items-center gap-6 pt-4 border-t border-dashed border-zinc-100 text-[9px] font-black text-zinc-400 uppercase tracking-widest">
-                                                    <span>📍 {event.clinic}</span>
-                                                    <span>👤 {event.doctor}</span>
+                                            <div className="flex-1 admin-card p-6 hover:border-brand-navy transition-all group-hover:translate-x-1">
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <h4 className="text-lg font-bold text-slate-900 tracking-tight">{event.title}</h4>
+                                                    <span className="text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-md">{event.date}</span>
+                                                </div>
+                                                <p className="text-slate-500 text-sm leading-relaxed mb-4 font-medium italic">"{event.details}"</p>
+                                                <div className="flex items-center gap-4 pt-4 border-t border-slate-50 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                                                    <span className="flex items-center gap-1.5"><Building2 className="w-3 h-3" /> {event.clinic}</span>
+                                                    <span className="flex items-center gap-1.5"><User className="w-3 h-3" /> {event.doctor}</span>
                                                 </div>
                                             </div>
                                         </div>
                                     )) : (
-                                        <div className="p-20 text-center bg-white border-4 border-dashed border-zinc-100 rounded-[56px] opacity-40">
-                                            <span className="text-7xl">📂</span>
-                                            <p className="font-black text-zinc-400 uppercase tracking-widest mt-6">Sin eventos registrados</p>
+                                        <div className="p-20 text-center admin-card border-dashed">
+                                            <FileStack className="w-12 h-12 text-slate-200 mx-auto mb-4" />
+                                            <p className="font-bold text-slate-400 uppercase tracking-widest text-[11px]">Sin eventos clínicos registrados</p>
                                         </div>
                                     )}
                                 </div>
                             )}
 
                             {activeTab === 'Turnos' && (
-                                <div className="space-y-8 animate-fade-in">
-                                    {/* Formulario Crear Turno */}
-                                    {profile?.rol !== 'administrativo' ? (
-                                        <div className="bg-[#f0f9ff] p-10 rounded-[40px] border-2 border-[#0067b1]/10 shadow-inner">
-                                            <h3 className="text-xl font-black text-[#002b49] uppercase tracking-tighter mb-8 flex items-center gap-3">
-                                                <span className="w-8 h-8 rounded-lg bg-[#0067b1] text-white flex items-center justify-center text-sm">+</span>
-                                                Programar Nueva Cita Médica
-                                            </h3>
-                                            <form onSubmit={handleCreateTurn} className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                                                <div className="md:col-span-4 space-y-2">
-                                                    <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest ml-4">Fecha y Hora</label>
-                                                    <input
-                                                        type="datetime-local"
-                                                        required
-                                                        value={newTurnDate}
-                                                        onChange={(e) => setNewTurnDate(e.target.value)}
-                                                        className="w-full px-6 py-4 rounded-2xl bg-white border border-zinc-200 outline-none focus:border-[#0067b1] font-bold shadow-sm"
-                                                    />
-                                                </div>
-                                                <div className="md:col-span-8 space-y-2">
-                                                    <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest ml-4">Especialidad o Servicio</label>
-                                                    <input
-                                                        type="text"
-                                                        required
-                                                        value={newTurnSpecialty}
-                                                        onChange={(e) => setNewTurnSpecialty(e.target.value)}
-                                                        placeholder="Ej: Cardiología, Odontología..."
-                                                        className="w-full px-6 py-4 rounded-2xl bg-white border border-zinc-200 outline-none focus:border-[#0067b1] font-bold shadow-sm"
-                                                    />
-                                                </div>
-                                                <div className="md:col-span-9 space-y-2">
-                                                    <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest ml-4">Notas Internas (Opcional)</label>
-                                                    <input
-                                                        type="text"
-                                                        value={newTurnNote}
-                                                        onChange={(e) => setNewTurnNote(e.target.value)}
-                                                        placeholder="Motivo de consulta o indicaciones previas..."
-                                                        className="w-full px-6 py-4 rounded-2xl bg-white border border-zinc-200 outline-none focus:border-[#0067b1] font-bold shadow-sm"
-                                                    />
-                                                </div>
-                                                <div className="md:col-span-3 flex items-end">
-                                                    <button
-                                                        type="submit"
-                                                        disabled={creatingTurn}
-                                                        className={`w-full py-5 rounded-2xl bg-[#0067b1] text-white font-black uppercase tracking-widest text-[10px] transition-all shadow-xl shadow-[#0067b1]/20 ${creatingTurn ? 'opacity-50' : 'hover:bg-[#005694] active:scale-95'}`}
-                                                    >
-                                                        {creatingTurn ? 'Guardando...' : 'Programar Turno'}
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    ) : (
-                                        <div className="p-10 rounded-[40px] border-2 border-dashed border-zinc-200 bg-zinc-50 flex items-center gap-6 shadow-inner animate-in fade-in slide-in-from-top-4 duration-700">
-                                            <span className="text-4xl grayscale">🚫</span>
-                                            <div>
-                                                <p className="text-[10px] font-black text-[#002b49] uppercase tracking-widest mb-1">Permisos Restringidos</p>
-                                                <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-tighter">Su rol actual (<span className="text-[#0067b1]">{profile?.rol}</span>) no permite la creación o modificación de turnos.</p>
+                                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                    {/* Create Turn Section */}
+                                    <div className="admin-card bg-slate-50 p-6 border-slate-200">
+                                        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-tight mb-6 flex items-center gap-2">
+                                            <Plus className="w-4 h-4 text-brand-navy" />
+                                            Programar Atención Médica
+                                        </h3>
+                                        <form onSubmit={handleCreateTurn} className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                                            <div className="md:col-span-4 space-y-1.5">
+                                                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1">Fecha y Horario</label>
+                                                <input
+                                                    type="datetime-local"
+                                                    required
+                                                    value={newTurnDate}
+                                                    onChange={(e) => setNewTurnDate(e.target.value)}
+                                                    className="w-full input-sober py-2.5 text-sm"
+                                                />
                                             </div>
-                                        </div>
-                                    )}
+                                            <div className="md:col-span-8 space-y-1.5">
+                                                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1">Servicio / Especialidad</label>
+                                                <input
+                                                    type="text"
+                                                    required
+                                                    value={newTurnSpecialty}
+                                                    onChange={(e) => setNewTurnSpecialty(e.target.value)}
+                                                    placeholder="Ej: Clínica Médica, Pediatría..."
+                                                    className="w-full input-sober py-2.5 text-sm"
+                                                />
+                                            </div>
+                                            <div className="md:col-span-12 space-y-1.5">
+                                                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1">Observaciones</label>
+                                                <input
+                                                    type="text"
+                                                    value={newTurnNote}
+                                                    onChange={(e) => setNewTurnNote(e.target.value)}
+                                                    placeholder="Motivo de la consulta o notas preventivas..."
+                                                    className="w-full input-sober py-2.5 text-sm"
+                                                />
+                                            </div>
+                                            <div className="md:col-span-12 flex justify-end">
+                                                <button
+                                                    type="submit"
+                                                    disabled={creatingTurn}
+                                                    className="btn-primary px-8 py-3 text-[11px] flex items-center gap-2"
+                                                >
+                                                    {creatingTurn ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Calendar className="w-3.5 h-3.5" />}
+                                                    Confirmar Turno
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
 
-                                    {/* Listado de Turnos */}
+                                    {/* Turns List */}
                                     <div className="space-y-4">
-                                        <div className="flex items-center justify-between px-6">
-                                            <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.3em]">Agenda de Turnos ({turns.length})</p>
-                                            <button onClick={fetchTurns} className="p-2 hover:bg-white rounded-xl transition-all font-black text-[#0067b1] text-[10px] hover:shadow-md uppercase tracking-widest">🔄 Actualizar</button>
+                                        <div className="flex items-center justify-between px-2">
+                                            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Agenda de Citas ({turns.length})</p>
+                                            <button onClick={fetchTurns} className="text-brand-navy hover:text-brand-navy-2 transition-colors flex items-center gap-1.5 font-bold text-[10px] uppercase tracking-wider">
+                                                <RefreshCw className="w-3 h-3" /> Sincronizar
+                                            </button>
                                         </div>
 
-                                        <div className="grid grid-cols-1 gap-4">
+                                        <div className="grid grid-cols-1 gap-3">
                                             {loadingTurns ? (
-                                                <div className="p-20 text-center animate-pulse bg-white rounded-[40px] border border-zinc-100 shadow-md">
-                                                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Sincronizando con Agenda Central...</p>
+                                                <div className="p-12 text-center animate-pulse admin-card">
+                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Consultando Agenda Digital...</p>
                                                 </div>
                                             ) : turns.length > 0 ? (
                                                 turns.map((turn) => (
-                                                    <div key={turn.id} className="p-8 rounded-[32px] bg-white border border-zinc-100 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all hover:border-[#0067b1] hover:shadow-2xl group">
-                                                        <div className="flex items-center gap-6">
-                                                            <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-white font-black text-sm shadow-lg ${turn.estado === 'realizado' ? 'bg-emerald-500' :
-                                                                turn.estado === 'cancelado' ? 'bg-red-500' : 'bg-[#0067b1]'
+                                                    <div key={turn.id} className="admin-card p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-brand-navy transition-all group">
+                                                        <div className="flex items-center gap-4">
+                                                            <div className={`w-12 h-12 rounded-xl flex flex-col items-center justify-center text-white shadow-sm ${turn.estado === 'realizado' ? 'bg-emerald-500' :
+                                                                turn.estado === 'cancelado' ? 'bg-red-500' : 'bg-brand-navy'
                                                                 }`}>
-                                                                {new Date(turn.fecha_hora).getDate()}
-                                                                <br />
-                                                                {new Date(turn.fecha_hora).toLocaleString('es', { month: 'short' }).toUpperCase()}
+                                                                <span className="text-xs font-bold leading-none">{new Date(turn.fecha_hora).getDate()}</span>
+                                                                <span className="text-[8px] font-bold uppercase">{new Date(turn.fecha_hora).toLocaleString('es', { month: 'short' })}</span>
                                                             </div>
                                                             <div>
-                                                                <h4 className="font-black text-xl text-zinc-900 tracking-tight leading-tight uppercase">{turn.especialidad}</h4>
-                                                                <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">
-                                                                    🕒 {new Date(turn.fecha_hora).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • {turn.profesional || 'Asignando Profesional'}
-                                                                </p>
-                                                                {turn.nota && <p className="text-[11px] font-bold text-zinc-400 mt-2 italic">"{turn.nota}"</p>}
+                                                                <h4 className="font-bold text-slate-900 uppercase tracking-tight">{turn.especialidad}</h4>
+                                                                <div className="flex items-center gap-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1">
+                                                                    <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {new Date(turn.fecha_hora).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                                    <span className="flex items-center gap-1"><User className="w-3 h-3" /> {turn.profesional || 'Por asignar'}</span>
+                                                                </div>
                                                             </div>
                                                         </div>
 
-                                                        <div className="flex items-center gap-4">
+                                                        <div className="flex items-center gap-3">
                                                             {profile?.rol !== 'administrativo' ? (
                                                                 <select
                                                                     value={turn.estado}
                                                                     onChange={(e) => handleUpdateTurnStatus(turn.id, e.target.value)}
-                                                                    className="px-4 py-2 rounded-xl bg-zinc-50 border border-zinc-200 text-[10px] font-black uppercase tracking-widest outline-none focus:border-[#0067b1] transition-all"
+                                                                    className="px-4 py-2 rounded-lg bg-slate-50 border border-slate-200 text-[10px] font-bold uppercase tracking-widest outline-none focus:border-brand-navy transition-all"
                                                                 >
                                                                     <option value="programado">Programado</option>
                                                                     <option value="realizado">Atendido</option>
                                                                     <option value="cancelado">Cancelado</option>
-                                                                    <option value="ausente">Ausente</option>
                                                                 </select>
                                                             ) : (
-                                                                <div className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border ${turn.estado === 'realizado' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                                                                    turn.estado === 'cancelado' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-blue-50 text-blue-600 border-blue-100'
+                                                                <div className={`px-4 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-widest border ${turn.estado === 'realizado' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                                                                    turn.estado === 'cancelado' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-brand-navy/5 text-brand-navy border-brand-navy/10'
                                                                     }`}>
                                                                     {turn.estado}
                                                                 </div>
@@ -622,9 +649,9 @@ export default function FichaUnificada() {
                                                     </div>
                                                 ))
                                             ) : (
-                                                <div className="p-20 text-center bg-white border border-zinc-100 rounded-[40px] shadow-inner opacity-60">
-                                                    <span className="text-6xl grayscale">📅</span>
-                                                    <p className="font-black text-zinc-400 uppercase tracking-widest mt-6 italic">No hay turnos registrados</p>
+                                                <div className="p-16 text-center admin-card border-dashed">
+                                                    <Calendar className="w-10 h-10 text-slate-200 mx-auto mb-3" />
+                                                    <p className="font-bold text-slate-400 uppercase tracking-widest text-[10px]">No se registran turnos pendientes</p>
                                                 </div>
                                             )}
                                         </div>
@@ -633,96 +660,97 @@ export default function FichaUnificada() {
                             )}
 
                             {activeTab === 'Documentos' && (
-                                <div className="space-y-8 animate-fade-in">
-                                    {/* Subida Section */}
+                                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                    {/* Upload Section */}
                                     {profile?.rol !== 'administrativo' ? (
-                                        <div className="bg-[#f8fafc] p-10 rounded-[40px] border-2 border-[#0067b1]/10 shadow-inner">
-                                            <h3 className="text-xl font-black text-[#002b49] uppercase tracking-tighter mb-8 flex items-center gap-3">
-                                                <span className="w-8 h-8 rounded-lg bg-[#0067b1] text-white flex items-center justify-center text-sm">+</span>
-                                                Digitalizar Nuevo Documento
+                                        <div className="admin-card bg-slate-50 p-6 border-slate-200">
+                                            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-tight mb-6 flex items-center gap-2">
+                                                <Plus className="w-4 h-4 text-brand-navy" />
+                                                Digitalizar Documentación
                                             </h3>
-                                            <form onSubmit={handleUpload} className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                                                <div className="md:col-span-8 space-y-2">
-                                                    <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest ml-4">Título Identificador</label>
+                                            <form onSubmit={handleUpload} className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                                                <div className="md:col-span-8 space-y-1.5">
+                                                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1">Descripción del Archivo</label>
                                                     <input
                                                         type="text"
                                                         required
                                                         value={uploadTitle}
                                                         onChange={(e) => setUploadTitle(e.target.value)}
-                                                        className="w-full px-6 py-4 rounded-2xl bg-white border border-zinc-200 outline-none focus:border-[#0067b1] font-bold shadow-sm"
-                                                        placeholder="Ej: Análisis Laboratorio - Feb 2024"
+                                                        className="w-full input-sober py-2.5 text-sm"
+                                                        placeholder="Ej: Informe Radiológico Torax"
                                                     />
                                                 </div>
-                                                <div className="md:col-span-4 space-y-2">
-                                                    <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest ml-4">Categoría</label>
+                                                <div className="md:col-span-4 space-y-1.5">
+                                                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1">Categoría</label>
                                                     <select
                                                         value={uploadType}
                                                         onChange={(e) => setUploadType(e.target.value)}
-                                                        className="w-full px-6 py-4 rounded-2xl bg-white border border-zinc-200 outline-none focus:border-[#0067b1] font-bold shadow-sm"
+                                                        className="w-full input-sober py-2.5 text-sm"
                                                     >
-                                                        <option value="dni">Documento de Identidad</option>
+                                                        <option value="dni">Identidad</option>
                                                         <option value="historia_clinica">Historia Clínica</option>
-                                                        <option value="laboratorio">Laboratorio / Estudios</option>
-                                                        <option value="otro">Otros Archivos</option>
+                                                        <option value="laboratorio">Estudios Externos</option>
+                                                        <option value="otro">Otros</option>
                                                     </select>
                                                 </div>
-                                                <div className="md:col-span-9 space-y-2">
-                                                    <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest ml-4">Archivo (PDF o Imagen Soporte)</label>
+                                                <div className="md:col-span-9 space-y-1.5">
+                                                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1">Seleccionar Archivo (PDF/IMG)</label>
                                                     <input
                                                         type="file"
                                                         required
                                                         accept="application/pdf,image/*"
                                                         onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
-                                                        className="w-full px-6 py-4 rounded-2xl bg-white border border-zinc-200 outline-none focus:border-[#0067b1] font-bold shadow-sm"
+                                                        className="w-full input-sober py-2 px-3 text-xs bg-white"
                                                     />
                                                 </div>
                                                 <div className="md:col-span-3 flex items-end">
                                                     <button
                                                         type="submit"
                                                         disabled={uploading}
-                                                        className={`w-full py-5 rounded-2xl bg-[#0067b1] text-white font-black uppercase tracking-widest text-[10px] transition-all shadow-xl shadow-[#0067b1]/20 ${uploading ? 'opacity-50' : 'hover:bg-[#005694] active:scale-95'}`}
+                                                        className="btn-primary w-full py-3.5 text-[11px] flex items-center justify-center gap-2"
                                                     >
-                                                        {uploading ? 'Procesando...' : 'Subir Archivo'}
+                                                        {uploading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <FileStack className="w-3.5 h-3.5" />}
+                                                        Procesar Carga
                                                     </button>
                                                 </div>
                                             </form>
                                         </div>
                                     ) : (
-                                        <div className="p-10 rounded-[40px] border-2 border-dashed border-zinc-200 bg-zinc-50 flex items-center gap-6 shadow-inner animate-in fade-in slide-in-from-top-4 duration-700">
-                                            <span className="text-4xl grayscale">🚫</span>
+                                        <div className="admin-card p-6 border-slate-200 bg-slate-50/50 flex items-center gap-4 text-slate-400">
+                                            <Lock className="w-6 h-6" />
                                             <div>
-                                                <p className="text-[10px] font-black text-[#002b49] uppercase tracking-widest mb-1">Permisos Restringidos</p>
-                                                <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-tighter">Su rol actual (<span className="text-[#0067b1]">{profile?.rol}</span>) solo permite la visualización de metadatos. La carga de archivos no está habilitada.</p>
+                                                <p className="text-[10px] font-bold uppercase tracking-widest leading-none mb-1">Carga Deshabilitada</p>
+                                                <p className="text-[9px] font-medium leading-none">Su rol administrativo solo permite visualización.</p>
                                             </div>
                                         </div>
                                     )}
 
-                                    {/* Listado Section */}
+                                    {/* Docs List */}
                                     <div className="space-y-4">
-                                        <div className="flex items-center justify-between px-6">
-                                            <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.3em]">Repositorio de Archivos ({documents.length})</p>
-                                            <button onClick={fetchDocuments} className="p-2 hover:bg-white rounded-xl transition-all font-black text-[#0067b1] text-[10px] hover:shadow-md uppercase tracking-widest">🔄 Sincronizar</button>
+                                        <div className="flex items-center justify-between px-2">
+                                            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Repositorio Digital ({documents.length})</p>
+                                            <button onClick={fetchDocuments} className="text-brand-navy hover:text-brand-navy-2 transition-colors flex items-center gap-1.5 font-bold text-[10px] uppercase tracking-wider">
+                                                <RefreshCw className="w-3 h-3" /> Sincronizar
+                                            </button>
                                         </div>
 
-                                        <div className="grid grid-cols-1 gap-4">
+                                        <div className="grid grid-cols-1 gap-3">
                                             {loadingDocs ? (
-                                                <div className="p-20 text-center animate-pulse bg-white rounded-[40px] border border-zinc-100 shadow-md">
-                                                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Conectando con Supabase Storage...</p>
+                                                <div className="p-12 text-center animate-pulse admin-card">
+                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Consultando Repositorio Central...</p>
                                                 </div>
                                             ) : documents.length > 0 ? (
                                                 documents.map((doc) => (
-                                                    <div key={doc.id} className="p-6 rounded-[32px] bg-white border border-zinc-100 shadow-lg flex items-center justify-between transition-all hover:border-[#0067b1] hover:shadow-2xl hover:translate-x-1 group">
-                                                        <div className="flex items-center gap-6">
-                                                            <div className="w-16 h-16 bg-zinc-50 rounded-2xl flex items-center justify-center text-3xl group-hover:rotate-6 transition-transform shadow-inner">
-                                                                {doc.mime?.includes('pdf') ? '📄' : '🖼️'}
+                                                    <div key={doc.id} className="admin-card p-4 flex items-center justify-between hover:border-brand-navy transition-all group">
+                                                        <div className="flex items-center gap-4">
+                                                            <div className="w-10 h-10 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400 group-hover:text-brand-navy transition-colors">
+                                                                <FileText className="w-5 h-5" />
                                                             </div>
                                                             <div>
-                                                                <h4 className="font-black text-lg text-zinc-900 tracking-tight leading-tight uppercase">{doc.titulo}</h4>
-                                                                <div className="flex items-center gap-3 text-[9px] font-black text-zinc-400 uppercase tracking-widest mt-2 border-t border-zinc-50 pt-2">
-                                                                    <span className="text-[#0067b1]">{doc.tipo}</span>
-                                                                    <span>•</span>
+                                                                <h4 className="font-bold text-slate-900 uppercase tracking-tight leading-none mb-1">{doc.titulo}</h4>
+                                                                <div className="flex items-center gap-3 text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                                                                    <span className="text-brand-navy bg-brand-navy/5 px-2 py-0.5 rounded-md">{doc.tipo}</span>
                                                                     <span>{(doc.size / 1024).toFixed(1)} KB</span>
-                                                                    <span>•</span>
                                                                     <span>{new Date(doc.created_at).toLocaleDateString()}</span>
                                                                 </div>
                                                             </div>
@@ -730,21 +758,20 @@ export default function FichaUnificada() {
                                                         {profile?.rol !== 'administrativo' ? (
                                                             <button
                                                                 onClick={() => handleDownload(doc.id)}
-                                                                className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-[#002b49] text-white font-black uppercase text-[10px] tracking-widest hover:bg-[#0067b1] transition-all active:scale-95 shadow-lg group-hover:scale-105"
+                                                                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-900 text-white font-bold uppercase text-[10px] tracking-wider hover:bg-black transition-all shadow-sm"
                                                             >
-                                                                <span>⬇️</span> Ver Archivo
+                                                                <Eye className="w-3.5 h-3.5" />
+                                                                Visualizar
                                                             </button>
                                                         ) : (
-                                                            <div className="px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 text-[10px] font-black text-zinc-400 uppercase tracking-widest italic">
-                                                                Solo Lectura
-                                                            </div>
+                                                            <Lock className="w-4 h-4 text-slate-200" />
                                                         )}
                                                     </div>
                                                 ))
                                             ) : (
-                                                <div className="p-20 text-center bg-white border border-zinc-100 rounded-[40px] shadow-inner opacity-60">
-                                                    <span className="text-6xl grayscale">📂</span>
-                                                    <p className="font-black text-zinc-400 uppercase tracking-widest mt-6 italic">No se encontraron documentos digitalizados</p>
+                                                <div className="p-16 text-center admin-card border-dashed">
+                                                    <FileStack className="w-10 h-10 text-slate-200 mx-auto mb-3" />
+                                                    <p className="font-bold text-slate-400 uppercase tracking-widest text-[10px]">Sin documentación digitalizada</p>
                                                 </div>
                                             )}
                                         </div>
@@ -753,13 +780,13 @@ export default function FichaUnificada() {
                             )}
 
                             {(activeTab === 'Estudios' || activeTab === 'Vacunas') && (
-                                <div className="p-20 text-center bg-white border border-zinc-100 rounded-[56px] shadow-xl space-y-6">
-                                    <div className="w-24 h-24 rounded-full bg-zinc-50 border border-dashed border-zinc-200 mx-auto flex items-center justify-center text-4xl grayscale opacity-30">
-                                        🛠️
+                                <div className="p-20 text-center admin-card bg-slate-50/30 border-dashed space-y-4">
+                                    <div className="w-16 h-16 rounded-full bg-white shadow-inner mx-auto flex items-center justify-center text-slate-200">
+                                        <ShieldCheck className="w-8 h-8" />
                                     </div>
-                                    <div className="space-y-2">
-                                        <h4 className="text-xl font-black text-zinc-900 tracking-tighter uppercase">Módulo en Desarrollo</h4>
-                                        <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Esta sección estará disponible en la próxima actualización ministerial.</p>
+                                    <div className="space-y-1">
+                                        <h4 className="text-lg font-bold text-slate-900 tracking-tight uppercase">Módulo en Integración</h4>
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Los datos estarán disponibles en la Fase 3 del despliegue.</p>
                                     </div>
                                 </div>
                             )}
@@ -767,11 +794,11 @@ export default function FichaUnificada() {
                     </div>
                 </div>
             ) : !loading && !showAuditModal && (
-                <div className="p-20 text-center bg-white border-2 border-dashed border-zinc-200 rounded-[56px] space-y-8 animate-pulse">
-                    <span className="text-7xl">🔍</span>
-                    <div className="space-y-2">
-                        <h4 className="text-2xl font-black text-zinc-400 uppercase tracking-tighter">Buscando Registro Unificado...</h4>
-                        <p className="text-[10px] font-black text-zinc-300 uppercase tracking-widest italic">Consulte por DNI para iniciar la validación de identidad</p>
+                <div className="admin-card p-20 text-center border-dashed space-y-4 animate-pulse">
+                    <History className="w-12 h-12 text-slate-100 mx-auto" />
+                    <div className="space-y-1">
+                        <h4 className="text-2xl font-bold text-slate-200 uppercase tracking-tighter">Buscando Registro...</h4>
+                        <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Ingrese un identificador válido para visualizar el historial.</p>
                     </div>
                 </div>
             )}

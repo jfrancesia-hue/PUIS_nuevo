@@ -1,44 +1,25 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", "Outfit", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
 
-  --color-medical-50: #eef7ff;
-  --color-medical-100: #d9eeff;
-  --color-medical-200: #bce1ff;
-  --color-medical-500: #0067b1;
-  --color-medical-600: #005694;
-  --color-medical-700: #004577;
-  --color-medical-800: #00345a;
-  --color-medical-900: #00233d;
-
-  --color-catamarca-yellow: #f9b000;
-  --color-catamarca-blue: #0067b1;
-  --color-catamarca-dark: #002b49;
-  --color-catamarca-cyan: #00a2e1;
+  --color-brand-navy: #0B2D4D;
+  --color-brand-navy-2: #0F3A5F;
+  --color-brand-accent: #F5B400;
+  --color-brand-bg: #F8FAFC;
+  --color-brand-surface: #FFFFFF;
+  --color-brand-border: #E2E8F0;
+  --color-brand-text: #0F172A;
+  --color-brand-muted: #64748B;
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #333333;
-  --card: #ffffff;
-  --card-foreground: #333333;
-  --border: #eeeeee;
-  --accent: #0067b1;
-  --secondary: #00a2e1;
-  --yellow: #f9b000;
-  --dark-blue: #002b49;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: oklch(0.1 0.02 220);
-    --foreground: oklch(0.95 0.01 220);
-    --card: oklch(0.14 0.03 220);
-    --card-foreground: oklch(0.95 0.01 220);
-    --border: oklch(0.25 0.05 220);
-    --accent: oklch(0.7 0.15 220);
-  }
+  --background: #F8FAFC;
+  --foreground: #0F172A;
+  --card: #FFFFFF;
+  --card-foreground: #0F172A;
+  --border: #E2E8F0;
+  --radius: 12px;
 }
 
 * {
@@ -52,55 +33,31 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-.portal-card {
-  @apply rounded-[16px] overflow-hidden shadow-md border border-zinc-100 hover:shadow-xl transition-all;
+.admin-card {
+  @apply bg-white rounded-[14px] border border-slate-200 shadow-sm transition-all;
 }
 
-.portal-card-top {
-  @apply bg-[#0067b1] flex items-center justify-center min-h-[200px] relative;
+.admin-table-header {
+  @apply bg-slate-50 text-slate-500 font-semibold text-xs uppercase tracking-wider;
 }
 
-.portal-card-bottom {
-  @apply bg-white p-6 text-center border-t;
+.badge-sober {
+  @apply px-2.5 py-0.5 rounded-full text-xs font-medium border;
 }
 
-.gradient-text {
-  background: linear-gradient(135deg, var(--accent), #00a2e1);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+.input-sober {
+  @apply w-full px-4 py-2.5 rounded-[12px] bg-white border border-slate-200 focus:border-brand-navy focus:ring-2 focus:ring-brand-navy/10 outline-none transition-all text-slate-900 placeholder-slate-400;
 }
 
-.nav-item-active {
-  background: color-mix(in oklch, var(--accent), transparent 90%);
-  color: var(--accent);
-  border-right: 3px solid var(--accent);
+.btn-primary {
+  @apply bg-brand-navy text-white px-6 py-2.5 rounded-[12px] font-semibold hover:bg-brand-navy-2 transition-all active:scale-[0.98];
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    transform: translateX(-100%);
-  }
-
-  to {
-    transform: translateX(0);
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .animate-fade-in {
   animation: fadeIn 0.3s ease-out forwards;
-}
-
-.animate-slide-in-left {
-  animation: slideInLeft 0.3s ease-out forwards;
 }

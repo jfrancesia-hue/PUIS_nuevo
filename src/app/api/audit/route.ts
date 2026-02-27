@@ -4,7 +4,15 @@ import { createClient } from '@/lib/supabase/server'
 export async function POST(req: Request) {
   const body = await req.json()
   const motivo = String(body.motivo ?? '').trim()
-  const entity_id = body.entity_id || body.persona_id || null
+
+  const isUuid = (val: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val)
+  let entity_id = body.entity_id || body.persona_id || null
+  const raw_entity_id = entity_id
+
+  if (entity_id && !isUuid(entity_id)) {
+    entity_id = null // Don't break DB if it's a DNI
+  }
+
   const accion = String(body.accion || body.action || 'ver_ficha').trim()
   const entity = String(body.entity || 'personas').trim()
 
@@ -33,7 +41,8 @@ export async function POST(req: Request) {
     entity,
     motivo,
     metadata: {
-      ...body.metadata
+      ...body.metadata,
+      raw_entity_id
     }
   })
 
