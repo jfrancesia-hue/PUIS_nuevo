@@ -60,12 +60,13 @@ export async function GET(
       await supabaseAdmin.from('audit_events').insert({
         tenant_id: document.tenant_id,
         user_id: user.id,
-        persona_id: document.persona_id,
-        accion: 'document_download_signed_url',
+        entity_id: document.id,
+        action: 'document_download_signed_url',
         motivo: `Descarga de documento: ${document.titulo}`,
         metadata: {
           entity: 'documentos',
           entity_id: document.id,
+          persona_id: document.persona_id,
           storage_path: document.storage_path
         }
       })

@@ -29,7 +29,7 @@ export async function POST(req: Request) {
     tenant_id: profile.tenant_id,
     user_id: userData.user.id,
     entity_id,
-    accion,
+    action: accion,
     motivo,
     metadata: {
       ...body.metadata,

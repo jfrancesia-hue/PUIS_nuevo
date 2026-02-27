@@ -50,8 +50,8 @@ export async function PATCH(
         await supabase.from('audit_events').insert({
             tenant_id: profile.tenant_id,
             user_id: user.id,
-            persona_id: turno.persona_id,
-            accion: 'turno_actualizado',
+            entity_id: turno.persona_id,
+            action: 'turno_actualizado',
             motivo: `Cambio de estado del turno a: ${estado}`,
             metadata: {
                 entity: 'turnos',

@@ -47,7 +47,8 @@ export async function GET(
             await supabase.from('audit_events').insert({
                 tenant_id,
                 user_id: user.id,
-                accion: 'document_list_by_persona',
+                entity_id: personaId,
+                action: 'document_list_by_persona',
                 motivo: `Consulta de listado de documentos para persona: ${personaId}`,
                 metadata: {
                     entity: 'personas',

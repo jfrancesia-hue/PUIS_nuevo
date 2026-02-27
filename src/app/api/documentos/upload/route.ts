@@ -91,12 +91,13 @@ export async function POST(req: Request) {
       await supabaseAdmin.from('audit_events').insert({
         tenant_id,
         user_id: user.id,
-        persona_id,
-        accion: 'document_uploaded',
+        entity_id: docData.id,
+        action: 'document_uploaded',
         motivo: `Upload de documento: ${titulo}`,
         metadata: {
           entity: 'documentos',
           entity_id: docData.id,
+          persona_id,
           tipo,
           titulo,
           storage_path: storagePath
