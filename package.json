@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed:demo": "npx tsx --env-file=.env.local scripts/seed-demo.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.8.0",

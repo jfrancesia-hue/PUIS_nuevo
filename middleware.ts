@@ -1,8 +1,23 @@
 import type { NextRequest } from 'next/server'
-import { updateSession } from './src/lib/supabase/middleware'
+import { NextResponse } from 'next/server'
 
-export async function middleware(request: NextRequest) {
-  return updateSession(request)
+export function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname
+
+  // 🚫 NUNCA interceptar API
+  if (pathname.startsWith('/api')) {
+    return NextResponse.next()
+  }
+
+  // Assets públicos
+  if (
+    pathname.startsWith('/_next') ||
+    pathname === '/favicon.ico'
+  ) {
+    return NextResponse.next()
+  }
+
+  return NextResponse.next()
 }
 
 export const config = {

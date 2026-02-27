@@ -3,16 +3,20 @@
 import { useState } from "react";
 import Link from "next/link";
 
-export default function Navigation() {
+export default function Navigation({ hideHeader = false }: { hideHeader?: boolean }) {
     const [isOpen, setIsOpen] = useState(false);
 
     const menuItems: { label: string, icon: string, href: string, className?: string, onClick?: () => void }[] = [
-        { label: "Mi Perfil (Silvia Doe)", icon: "👤", href: "/ficha-unificada" },
-        { label: "Configuración", icon: "⚙️", href: "#" },
-        { label: "Mis Notificaciones", icon: "🔔", href: "/pendientes" },
-        { label: "Centro: Hosp. San Juan", icon: "🏥", href: "/semaforo" },
+        { label: "Mi Perfil Gestión", icon: "👤", href: "/ficha-unificada" },
+        { label: "Configuración de Nodo", icon: "⚙️", href: "#" },
+        { label: "Alertas Ministeriales", icon: "🔔", href: "/pendientes" },
+        { label: "Semáforo Gestión", icon: "🚥", href: "/semaforo" },
+        { label: "Portal Transparencia", icon: "🏛️", href: "/transparencia" },
+        { label: "Auditoría Evidencia", icon: "🛡️", href: "/auditoria/evidencia" },
+        { label: "Diagnóstico de Sistema", icon: "⚙️", href: "/gestion/diagnostico" },
+        { label: "Centro Hospitalario", icon: "🏥", href: "/semaforo" },
         {
-            label: "Cerrar Sesión",
+            label: "Salir del Sistema",
             icon: "🚪",
             href: "/login",
             className: "text-red-600 mt-10 border-t pt-6",
@@ -26,25 +30,28 @@ export default function Navigation() {
     return (
         <>
             {/* Global Nav Bar (White Background) */}
-            <div className="bg-white border-b px-6 py-3 flex items-center justify-between sticky top-[80px] z-40">
-                <button
-                    onClick={() => setIsOpen(true)}
-                    className="p-2 hover:bg-zinc-100 rounded-lg transition-colors border shadow-sm"
-                >
-                    <svg className="w-6 h-6 text-[#0067b1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
-                <div className="hidden md:flex items-center gap-6 text-sm font-bold text-zinc-600">
-                    <Link href="/" className="hover:text-[#0067b1] transition-colors">INICIO</Link>
-                    <Link href="/turnos" className="hover:text-[#0067b1] transition-colors">TURNOS</Link>
-                    <Link href="/ficha-unificada" className="hover:text-[#0067b1] transition-colors">HISTORIAL</Link>
-                    <Link href="/pendientes" className="hover:text-[#0067b1] transition-colors">GESTIÓN</Link>
+            {!hideHeader && (
+                <div className="bg-white border-b px-6 py-3 flex items-center justify-between sticky top-[80px] z-40">
+                    <button
+                        id="puis-nav-trigger"
+                        onClick={() => setIsOpen(true)}
+                        className="p-2 hover:bg-zinc-100 rounded-lg transition-colors border shadow-sm"
+                    >
+                        <svg className="w-6 h-6 text-[#0067b1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                    <div className="hidden md:flex items-center gap-6 text-sm font-bold text-zinc-600">
+                        <Link href="/" className="hover:text-[#0067b1] transition-colors">INICIO</Link>
+                        <Link href="/turnos" className="hover:text-[#0067b1] transition-colors">TURNOS</Link>
+                        <Link href="/ficha-unificada" className="hover:text-[#0067b1] transition-colors">HISTORIAL</Link>
+                        <Link href="/pendientes" className="hover:text-[#0067b1] transition-colors">GESTIÓN</Link>
+                    </div>
+                    <div className="text-[10px] font-black uppercase text-[#0067b1] tracking-widest bg-[#0067b1]/5 px-3 py-1 rounded-full border border-[#0067b1]/20">
+                        Hosp. San Juan
+                    </div>
                 </div>
-                <div className="text-[10px] font-black uppercase text-[#0067b1] tracking-widest bg-[#0067b1]/5 px-3 py-1 rounded-full border border-[#0067b1]/20">
-                    Hosp. San Juan
-                </div>
-            </div>
+            )}
 
             {/* Side Menu Drawer */}
             {isOpen && (

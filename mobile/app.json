@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "PUIS Catamarca",
+    "slug": "puis-catamarca-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "primaryColor": "#0067b1",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#002b49"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.catamarca.puis"
+    },
+    "android": {
+      "package": "com.catamarca.puis",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#002b49",
+        "foregroundImage": "./assets/icon.png"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}

@@ -27,6 +27,7 @@ export default function UnificacionDirecciones() {
             status: "Activo",
             sigesa_mod: "SISA Sync",
             color: "blue",
+            impact: "Regional",
             modules: [
                 {
                     name: "SALA DE SITUACIÓN (SIGESA)",
@@ -50,6 +51,7 @@ export default function UnificacionDirecciones() {
             status: "Activo",
             sigesa_mod: "SAMIC / Recupero",
             color: "amber",
+            impact: "Finanzas",
             modules: [
                 {
                     name: "RECUPERO DE COSTOS (SAMIC)",
@@ -72,6 +74,7 @@ export default function UnificacionDirecciones() {
             status: "Activo",
             sigesa_mod: "HCDU / SIGESA Core",
             color: "sky",
+            impact: "Digital",
             modules: [
                 {
                     name: "SIGESA CORE (HCDU)",
@@ -94,6 +97,7 @@ export default function UnificacionDirecciones() {
             status: "Crítico",
             sigesa_mod: "Gestión de Camas",
             color: "red",
+            impact: "Emergencias",
             modules: [
                 {
                     name: "CENTRO DE DESPACHO 107",
@@ -116,6 +120,7 @@ export default function UnificacionDirecciones() {
             status: "Activo",
             sigesa_mod: "Red Perinatal",
             color: "emerald",
+            impact: "Maternal",
             modules: [
                 {
                     name: "RED DE NEONATOLOGÍA (SIGESA)",

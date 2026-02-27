@@ -44,7 +44,7 @@ export default function AsistenteIA() {
 
     const handleSend = (text: string) => {
         if (!text.trim()) return;
-        const newMsg = { role: "user", content: text, time: new Date().toLocaleTimeString([], { hour: '2d-digit', minute: '2d-digit' }) };
+        const newMsg = { role: "user", content: text, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
         setMessages([...messages, newMsg]);
         setInput("");
         setIsTyping(true);
@@ -57,7 +57,7 @@ export default function AsistenteIA() {
             };
 
             const responseKey = Object.keys(responses).find(k => text.toLowerCase().includes(k)) || "defecto";
-            const botMsg = { role: "assistant", content: responses[responseKey], time: new Date().toLocaleTimeString([], { hour: '2d-digit', minute: '2d-digit' }) };
+            const botMsg = { role: "assistant", content: responses[responseKey], time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
             setMessages(prev => [...prev, botMsg]);
             setIsTyping(false);
         }, 1500);

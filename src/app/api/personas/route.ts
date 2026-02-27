@@ -1,45 +1,83 @@
-import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
 
-export async function GET(request: Request) {
-    const { searchParams } = new URL(request.url)
-    const dni = searchParams.get('dni')
-    const q = searchParams.get('q')
+export async function GET(req: Request) {
+  const supabase = await createClient()
 
-    const supabase = await createClient()
+  const url = new URL(req.url)
+  const q = (url.searchParams.get('q') || '').trim()
 
-    let query = supabase
-        .from('personas')
-        .select('*')
+  if (!q) {
+    return NextResponse.json({ ok: true, items: [] })
+  }
 
-    if (dni) {
-        query = query.eq('dni', dni)
-    } else if (q) {
-        query = query.or(`nombre.ilike.%${q}%,apellido.ilike.%${q}%`)
-    }
+  const { data: userData, error: userErr } = await supabase.auth.getUser()
+  if (userErr || !userData.user) return NextResponse.json({ ok: false, error: 'No autenticado' }, { status: 401 })
 
-    const { data, error } = await query.limit(20)
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('tenant_id')
+    .eq('user_id', userData.user.id)
+    .single()
 
-    if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 })
-    }
+  if (!profile) return NextResponse.json({ ok: false, error: 'Perfil no encontrado' }, { status: 404 })
 
-    return NextResponse.json(data)
+  const { data, error } = await supabase
+    .from('personas')
+    .select('id, dni, nombre, apellido, created_at')
+    .eq('tenant_id', profile.tenant_id)
+    .or(`dni.ilike.%${q}%,nombre.ilike.%${q}%,apellido.ilike.%${q}%`)
+    .limit(25)
+
+  if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 })
+
+  return NextResponse.json({ ok: true, items: data ?? [] })
 }
 
-export async function POST(request: Request) {
-    const supabase = await createClient()
-    const body = await request.json()
+export async function POST(req: Request) {
+  const supabase = await createClient()
+  const body = await req.json()
 
-    const { data, error } = await supabase
-        .from('personas')
-        .insert([body])
-        .select()
-        .single()
+  const { data: userData, error: userErr } = await supabase.auth.getUser()
+  if (userErr || !userData.user) return NextResponse.json({ ok: false, error: 'No autenticado' }, { status: 401 })
 
-    if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 })
-    }
+  const { data: profile, error: pErr } = await supabase
+    .from('profiles')
+    .select('tenant_id')
+    .eq('user_id', userData.user.id)
+    .single()
 
-    return NextResponse.json(data)
+  if (pErr) return NextResponse.json({ ok: false, error: pErr.message }, { status: 400 })
+
+  const payload = {
+    tenant_id: profile.tenant_id,
+    dni: String(body.dni ?? '').trim(),
+    nombre: String(body.nombre ?? '').trim(),
+    apellido: String(body.apellido ?? '').trim(),
+    email: body.email,
+    telefono: body.telefono,
+    fecha_nacimiento: body.fecha_nacimiento,
+    sexo: body.sexo,
+    direccion: body.direccion,
+    obra_social: body.obra_social
+  }
+
+  const { data, error } = await supabase.from('personas').insert(payload).select().single()
+  if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 })
+
+  // Auditoría
+  try {
+    await supabase.from('audit_events').insert({
+      tenant_id: profile.tenant_id,
+      user_id: userData.user.id,
+      persona_id: data.id,
+      accion: 'persona_creada',
+      motivo: `Alta de persona: ${data.nombre} ${data.apellido}`,
+      metadata: { entity: 'personas', entity_id: data.id, dni: data.dni }
+    })
+  } catch (e) {
+    console.warn('Audit error:', e)
+  }
+
+  return NextResponse.json({ ok: true, item: data })
 }

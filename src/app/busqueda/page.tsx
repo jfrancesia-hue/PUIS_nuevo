@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { Persona } from "@/types";
 
 export default function Busqueda() {
     const [query, setQuery] = useState("");
-    const [results, setResults] = useState<any[]>([]);
+    const [results, setResults] = useState<Persona[]>([]);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -19,7 +20,11 @@ export default function Busqueda() {
             try {
                 const res = await fetch(`/api/personas?q=${encodeURIComponent(query)}`);
                 const data = await res.json();
-                setResults(Array.isArray(data) ? data : []);
+                if (data.ok) {
+                    setResults(data.items || []);
+                } else {
+                    setResults([]);
+                }
             } catch (error) {
                 console.error("Search error:", error);
             } finally {

@@ -23,7 +23,7 @@ export default function RootLayout({
     <html lang="es" className={`${inter.variable} ${outfit.variable}`}>
       <body className="flex flex-col min-h-screen bg-white">
         {/* Top Accent Bar */}
-        <div className="h-2 w-full bg-[#f9b000] sticky top-0 z-[60]" />
+        <div className="h-1 w-full bg-[#f9b000] sticky top-0 z-[100]" />
 
         <AuthWrapper>
           {children}

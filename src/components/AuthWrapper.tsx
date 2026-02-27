@@ -10,24 +10,29 @@ export default function AuthWrapper({ children }: { children: React.ReactNode })
     const router = useRouter();
 
     useEffect(() => {
-        // Check if we are on the login page
-        if (pathname === "/login") {
-            setIsAuthenticated(true); // Don't block the login page itself
+        if (pathname === "/login" || pathname === "/acceso-gob") {
+            setIsAuthenticated(true);
             return;
         }
 
         const checkAuth = async () => {
-            const { data: { user } } = await fetch('/api/auth/session').then(res => res.json()).catch(() => ({ data: { user: null } }));
-            // Or better, use the client directly since this is a client component
-            // But since middleware already protects, we just need to avoid flicker
-            setIsAuthenticated(!!user);
-            if (!user) router.push("/login");
+            try {
+                const res = await fetch('/api/auth/me');
+                const data = await res.json();
+
+                if (data.ok && data.user) {
+                    setIsAuthenticated(true);
+                } else {
+                    setIsAuthenticated(false);
+                    router.push("/login");
+                }
+            } catch (err) {
+                setIsAuthenticated(false);
+                router.push("/login");
+            }
         };
 
-        // For simplicity in this step, we'll use a direct check or just rely on middleware
-        // But to maintain the "isAuthenticated" state for the shell:
-        const auth = document.cookie.includes('sb-'); // Quick check for supabase cookie
-        setIsAuthenticated(true); // Let middleware handle the real redirect, shell can render
+        checkAuth();
     }, [pathname, router]);
 
     // While checking auth, show a high-fidelity loading state
