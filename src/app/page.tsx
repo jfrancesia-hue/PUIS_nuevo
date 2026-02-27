@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import OnboardingRecorrido from "@/components/OnboardingRecorrido";
 import { Profile, Persona } from "@/types";
 import {
   FileText,
@@ -16,7 +15,12 @@ import {
   ShieldCheck,
   User,
   ArrowRight,
-  Loader2
+  Loader2,
+  Database,
+  Globe,
+  CheckCircle2,
+  AlertCircle,
+  Clock
 } from "lucide-react";
 
 export default function Home() {
@@ -139,45 +143,51 @@ export default function Home() {
   );
 
   const statusModulos = [
-    { name: "Ficha Unificada", status: "REAL", detail: "Conectado a Nodo Central", color: "text-emerald-600" },
-    { name: "Documentación", status: "REAL", detail: "Repositorio Digital Operativo", color: "text-emerald-600" },
-    { name: "Turnos", status: "REAL", detail: "Agenda Sincronizada", color: "text-emerald-600" },
-    { name: "Bandeja", status: "REAL", detail: "Gestión de Expedientes", color: "text-emerald-600" },
-    { name: "Semáforo Gestión", status: "PARCIAL", detail: "Indicadores en despliegue", color: "text-amber-600" },
-    { name: "Asistente IA", status: "PROTOTIPO", detail: "En fase de entrenamiento", color: "text-slate-400" },
+    { name: "Ficha Unificada", status: "REAL", detail: "Conectado a Nodo Central", color: "text-emerald-500", icon: <Database className="w-4 h-4" /> },
+    { name: "Repositorio Digital", status: "REAL", detail: "Storage Operativo 100%", color: "text-emerald-500", icon: <CheckCircle2 className="w-4 h-4" /> },
+    { name: "Gestión de Turnos", status: "REAL", detail: "Agendas Sincronizadas", color: "text-emerald-500", icon: <Clock className="w-4 h-4" /> },
+    { name: "Bandeja Central", status: "REAL", detail: "Distribución Activa", color: "text-emerald-500", icon: <Inbox className="w-4 h-4" /> },
+    { name: "Semáforo Gestión", status: "PARCIAL", detail: "Indicadores en despliegue", color: "text-amber-500", icon: <Activity className="w-4 h-4" /> },
+    { name: "Asistente IA", status: "PROTOTIPO", detail: "Motor de inferencia en v4.2", color: "text-slate-400", icon: <Bot className="w-4 h-4" /> },
   ];
 
   return (
-    <div className="space-y-10 animate-fade-in max-w-6xl mx-auto py-6">
+    <div className="space-y-12 animate-fade-in max-w-6xl mx-auto py-8 font-outfit">
       {/* Institutional Hero */}
-      <section className="bg-brand-navy rounded-3xl p-10 text-white shadow-sm overflow-hidden">
-        <div className="relative z-10 space-y-4">
-          <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-full bg-white/10 border border-white/20 text-[10px] font-bold uppercase tracking-widest text-white/80">
-              Gestión Gubernamental
+      <section className="bg-brand-navy rounded-[40px] p-12 text-white shadow-2xl shadow-brand-navy/20 overflow-hidden relative">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32" />
+        <div className="relative z-10 space-y-6">
+          <div className="flex items-center gap-3">
+            <span className="px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-[10px] font-black uppercase tracking-[0.3em] text-white/90">
+              Gobierno de Catamarca
             </span>
           </div>
-          <h1 className="text-4xl font-bold tracking-tight">
-            Plataforma Unificada de Información en Salud
-          </h1>
-          <p className="text-white/70 text-lg font-medium max-w-2xl leading-relaxed">
-            Catamarca Salud. Acceso integrado a la gestión clínica, administrativa y estratégica del sistema provincial.
-          </p>
+          <div className="space-y-2">
+            <h1 className="text-5xl font-black tracking-tighter uppercase leading-none">
+              Portal Unificado de Salud
+            </h1>
+            <p className="text-white/60 text-xl font-bold max-w-2xl leading-relaxed italic">
+              Gestión clínica digital integrada para el sistema provincial de salud.
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* Onboarding */}
-      <OnboardingRecorrido />
-
-      {/* Main Search */}
-      <section className="admin-card p-8 space-y-6">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-brand-navy/5 flex items-center justify-center text-brand-navy">
-            <Search className="w-6 h-6" />
+      {/* Main Search Section */}
+      <section className="bg-white rounded-[40px] p-10 border border-slate-200 shadow-xl shadow-slate-100 space-y-8">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-brand-navy text-white flex items-center justify-center shadow-lg shadow-brand-navy/20">
+              <Search className="w-7 h-7" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-black text-brand-navy uppercase tracking-tight">Localizador de Pacientes</h2>
+              <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mt-1">Acceso a historial clínico mediante DNI o ID</p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-xl font-bold text-slate-900">Búsqueda Unificada de Pacientes</h2>
-            <p className="text-slate-500 text-xs font-medium uppercase tracking-wider">Acceso directo a Ficha Clínica</p>
+          <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-slate-50 rounded-xl border border-slate-100 italic text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            <Globe className="w-3 h-3 text-brand-navy/30" />
+            Nodo Sincronizado
           </div>
         </div>
 
@@ -186,86 +196,94 @@ export default function Home() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Ingrese DNI, Apellido o ID de Ficha..."
-            className="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-100 focus:border-brand-navy focus:ring-4 focus:ring-brand-navy/5 outline-none text-lg font-semibold transition-all text-slate-900 placeholder:text-slate-400"
+            placeholder="Ingrese DNI o Apellido para búsqueda rápida..."
+            className="w-full px-8 py-5 rounded-[24px] bg-slate-50 border-2 border-slate-100 focus:border-brand-navy/20 focus:ring-8 focus:ring-brand-navy/5 outline-none text-xl font-black transition-all text-brand-navy placeholder:text-slate-300"
           />
           {isSearching && (
-            <div className="absolute right-6 top-1/2 -translate-y-1/2">
-              <Loader2 className="w-5 h-5 text-brand-navy animate-spin" />
+            <div className="absolute right-8 top-1/2 -translate-y-1/2">
+              <Loader2 className="w-6 h-6 text-brand-navy animate-spin" />
             </div>
           )}
         </div>
 
         {/* Search Results */}
         {searchResults.length > 0 && (
-          <div className="space-y-3 pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
             {searchResults.map((p) => (
-              <div key={p.id} className="p-4 rounded-xl border border-slate-100 bg-white flex items-center justify-between gap-4 hover:border-brand-navy transition-all group">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-brand-navy/5 group-hover:text-brand-navy transition-colors">
-                    <User className="w-5 h-5" />
+              <div key={p.id} className="p-6 rounded-[28px] border border-slate-100 bg-white flex items-center justify-between gap-4 hover:border-brand-navy/30 hover:bg-slate-50 transition-all group shadow-sm">
+                <div className="flex items-center gap-5">
+                  <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-brand-navy group-hover:text-white transition-all shadow-inner">
+                    <User className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-slate-900">{p.nombre} {p.apellido}</h3>
-                    <p className="text-xs font-semibold text-slate-500">
+                    <h3 className="font-black text-brand-navy uppercase tracking-tight">{p.nombre} {p.apellido}</h3>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">
                       DNI {p.dni} • {p.fecha_nacimiento ? `${new Date().getFullYear() - new Date(p.fecha_nacimiento).getFullYear()} años` : "N/A"}
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => router.push(`/ficha-unificada?personaId=${p.id}`)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-navy text-white text-[11px] font-bold uppercase tracking-wider hover:bg-brand-navy-2 transition-all shadow-sm"
+                  className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 text-brand-navy hover:bg-brand-navy hover:text-white transition-all group-hover:scale-110"
                 >
-                  Abrir Ficha
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <ArrowRight className="w-5 h-5" />
                 </button>
               </div>
             ))}
           </div>
         )}
-
-        {searchQuery.length >= 3 && searchResults.length === 0 && !isSearching && (
-          <div className="py-6 text-center">
-            <p className="text-slate-400 font-bold uppercase tracking-wider text-[10px]">Sin resultados para "{searchQuery}"</p>
-          </div>
-        )}
       </section>
 
-      {/* Service Panels */}
+      {/* Operational Modules Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredModulos.map((modulo) => (
-          <a key={modulo.name} href={modulo.href} className="admin-card p-6 flex items-start gap-4 hover:border-brand-navy hover:bg-slate-50/50 transition-all group">
-            <div className="w-12 h-12 rounded-xl bg-slate-50 text-brand-navy flex items-center justify-center group-hover:bg-brand-navy group-hover:text-white transition-all shadow-sm">
+          <a key={modulo.name} href={modulo.href} className="bg-white p-8 rounded-[36px] border border-slate-200 hover:border-brand-navy/30 hover:shadow-2xl hover:shadow-brand-navy/5 transition-all group flex flex-col gap-6">
+            <div className="w-14 h-14 rounded-2xl bg-slate-50 text-brand-navy flex items-center justify-center group-hover:bg-brand-navy group-hover:text-white transition-all shadow-inner">
               {modulo.icon}
             </div>
-            <div className="flex-1 space-y-1">
-              <h3 className="text-lg font-bold text-slate-900 group-hover:text-brand-navy transition-colors">{modulo.name}</h3>
-              <p className="text-slate-500 text-xs font-medium leading-relaxed">{modulo.description}</p>
+            <div className="space-y-2">
+              <h3 className="text-xl font-black text-brand-navy uppercase tracking-tighter group-hover:translate-x-1 transition-transform">{modulo.name}</h3>
+              <p className="text-slate-400 text-xs font-bold leading-relaxed">{modulo.description}</p>
             </div>
           </a>
         ))}
       </div>
 
-      {/* Admin Board */}
+      {/* System Status Dashboard */}
       {profile?.rol === 'admin' && (
-        <section className="admin-card bg-slate-900 border-none p-10 text-white space-y-6">
-          <div className="flex items-center justify-between border-b border-white/10 pb-6">
+        <section className="bg-brand-navy rounded-[48px] p-12 text-white space-y-10 shadow-2xl shadow-brand-navy/30">
+          <div className="flex items-center justify-between border-b border-white/10 pb-8">
             <div className="space-y-1">
-              <h2 className="text-xl font-bold tracking-tight">Estado de Operaciones</h2>
-              <p className="text-white/40 text-[10px] font-bold uppercase tracking-[0.2em]">Mapa de Capacidades del Sistema</p>
+              <h2 className="text-2xl font-black uppercase tracking-tighter flex items-center gap-3">
+                <ShieldCheck className="w-8 h-8 text-brand-accent" />
+                Estado de Infraestructura
+              </h2>
+              <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em]">Protocolo de Conectividad y Salud del Nodo</p>
             </div>
-            <div className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/60 text-[10px] font-bold uppercase tracking-wider">
-              Protocolo Industrial
+            <div className="flex gap-4">
+              <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/60 text-[10px] font-black uppercase tracking-widest italic">
+                Uptime: 99.9%
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {statusModulos.map((m) => (
-              <div key={m.name} className="p-4 rounded-xl bg-white/5 border border-white/5 flex flex-col justify-between h-24">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-white/80">{m.name}</p>
-                <div className="flex items-center justify-between">
-                  <p className="text-[10px] text-white/40 font-medium">{m.detail}</p>
-                  <p className={`text-[9px] font-bold uppercase tracking-widest ${m.color}`}>{m.status}</p>
+              <div key={m.name} className="p-6 rounded-[32px] bg-white/5 border border-white/5 hover:bg-white/10 transition-all group relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-12 h-12 bg-white/5 rounded-full -mr-6 -mt-6 group-hover:scale-150 transition-transform" />
+                <div className="flex flex-col justify-between h-full gap-8 relative z-10">
+                  <div className="flex items-start justify-between">
+                    <div className="p-3 bg-white/5 rounded-xl text-white/80">
+                      {m.icon}
+                    </div>
+                    <span className={`text-[8px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full bg-white/5 ${m.color}`}>
+                      {m.status}
+                    </span>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[11px] font-black uppercase tracking-widest text-white">{m.name}</p>
+                    <p className="text-[9px] text-white/40 font-bold uppercase tracking-tight">{m.detail}</p>
+                  </div>
                 </div>
               </div>
             ))}
