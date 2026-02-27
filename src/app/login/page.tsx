@@ -30,7 +30,7 @@ export default function LoginPage() {
                 return;
             }
 
-            router.push("/ficha-unificada");
+            router.push("/");
         } catch (err) {
             setError("Error de conexión con el servidor");
         } finally {
