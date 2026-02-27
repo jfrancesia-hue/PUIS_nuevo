@@ -1,199 +1,229 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import {
+    Bot,
+    User,
+    Send,
+    Sparkles,
+    Brain,
+    Stethoscope,
+    History,
+    Activity,
+    LineChart,
+    ChevronRight,
+    Heart
+} from "lucide-react";
+
+interface Message {
+    role: 'user' | 'assistant';
+    content: string;
+}
 
 export default function AsistenteIA() {
-    const [messages, setMessages] = useState([
-        { role: "assistant", content: "Hola, soy el Asistente Fiscal IA del Ministerio de Salud. ¿En qué puedo ayudarte con la gestión hoy?", time: "12:40" }
-    ]);
-    const [input, setInput] = useState("");
-    const [isTyping, setIsTyping] = useState(false);
-    const scrollRef = useRef<HTMLDivElement>(null);
+    const [messages, setMessages] = useState<Message[]>([
+        { role: 'assistant', content: 'Hola. Soy el Asistente Clínico del Ministerio. ¿En qué puedo ayudarle hoy?' }
+    ])
+    const [input, setInput] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [view, setView] = useState('chat') // 'chat' | 'predictions'
 
-    useEffect(() => {
-        if (scrollRef.current) {
-            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    const handleSendMessage = async (e: React.FormEvent) => {
+        e.preventDefault()
+        if (!input.trim()) return
+
+        const userMsg: Message = { role: 'user', content: input }
+        setMessages(prev => [...prev, userMsg])
+        setInput('')
+        setLoading(true)
+
+        try {
+            const res = await fetch('/api/asistente/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: input })
+            })
+            const data = await res.json()
+            if (data.ok) {
+                setMessages(prev => [...prev, { role: 'assistant', content: data.response }])
+            }
+        } catch (error) {
+            console.error('Chat error:', error)
+        } finally {
+            setLoading(false)
         }
-    }, [messages]);
+    }
 
-    const alerts = [
-        {
-            id: 1,
-            type: "Riesgo Epidemiológico",
-            center: "Hospital Niños Eva Perón",
-            reason: "↑ 25% Consultas Respiratorias + Baja temperatura prevista (-2°C)",
-            prediction: "Brote Bronquiolitis inminente: Necesidad de 15 camas adicionales en 72hs.",
-            status: "critical"
-        },
-        {
-            id: 2,
-            type: "Falla Logística Central",
-            center: "Depósito Provincial Insumos",
-            reason: "Demora en arribo de camión frío (Vacunas) por corte en Ruta 38.",
-            prediction: "Riesgo de pérdida de cadena de frío en 6hs si no hay back-up.",
-            status: "critical"
-        }
-    ];
-
-    const queries = [
-        "¿Cuál es el centro con mayor mora en derivaciones?",
-        "¿Qué zona presenta el mayor índice de ausentismo médico?",
-        "Predecir requerimientos de oxígeno para el próximo fin de semana.",
-        "Identificar cuellos de botella en la entrega de turnos por especialidad."
-    ];
-
-    const handleSend = (text: string) => {
-        if (!text.trim()) return;
-        const newMsg = { role: "user", content: text, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
-        setMessages([...messages, newMsg]);
-        setInput("");
-        setIsTyping(true);
-
-        setTimeout(() => {
-            const responses: Record<string, string> = {
-                "oxigeno": "Según la tendencia de ocupación en el Hospital San Juan y Niños, se prevé un consumo de 450m3 extra para este fin de semana. Sugiero validar stock en planta central.",
-                "derivaciones": "El Hospital de Belén presenta la mayor mora (promedio 4.5hs). El 60% son derivaciones a Capital por falta de anestesista de guardia.",
-                "defecto": "Analizando la base de datos de SIGESA Pro... He detectado un patrón de optimización en el Área Programática 2. ¿Deseas ver el informe detallado?"
-            };
-
-            const responseKey = Object.keys(responses).find(k => text.toLowerCase().includes(k)) || "defecto";
-            const botMsg = { role: "assistant", content: responses[responseKey], time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
-            setMessages(prev => [...prev, botMsg]);
-            setIsTyping(false);
-        }, 1500);
-    };
+    const predictions = [
+        { title: 'Riesgo Cardiovascular', value: 'Bajo', trend: 'estable', icon: <Heart className="w-5 h-5 text-red-500" /> },
+        { title: 'Probabilidad Internación', value: '15%', trend: 'descenso', icon: <Stethoscope className="w-5 h-5 text-blue-500" /> },
+        { title: 'Cumplimiento Terapéutico', value: '92%', trend: 'ascenso', icon: <Activity className="w-5 h-5 text-emerald-500" /> }
+    ]
 
     return (
-        <div className="max-w-6xl mx-auto space-y-12 animate-fade-in py-10 font-outfit">
-            {/* AI Assistant Institutional Header */}
-            <section className="flex flex-col lg:flex-row items-center gap-10 p-12 rounded-[56px] bg-gradient-to-br from-[#002b49] via-[#00477a] to-[#0067b1] text-white shadow-3xl relative overflow-hidden border-8 border-white/10">
-                <div className="relative z-10 space-y-6 flex-1">
-                    <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-white/10 border-2 border-white/20 text-white text-[10px] font-black uppercase tracking-[0.3em] backdrop-blur-md">
-                        <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse"></span>
-                        Inteligencia Administrativa • Nodo Catamarca
-                    </div>
-                    <h1 className="text-6xl font-black tracking-tighter leading-tight italic">
-                        ASISTENTE <span className="text-[#f9b000]">FISCAL IA</span>
-                    </h1>
-                    <p className="text-sky-100/80 font-bold text-xl leading-relaxed max-w-2xl">
-                        Motor de predicción sanitaria: Análisis neuro-operativo para anticipar flujos de red y optimizar la respuesta ministerial de Catamarca.
-                    </p>
-                </div>
-                <div className="w-48 h-48 rounded-[48px] bg-white/5 flex items-center justify-center shadow-2xl border-4 border-white/10 relative z-10 animate-float overflow-hidden group">
-                    <div className="absolute inset-0 bg-sky-400 opacity-20 blur-2xl group-hover:opacity-40 transition-opacity"></div>
-                    <span className="text-7xl relative z-10">🤖</span>
-                </div>
-                {/* Decorative Elements */}
-                <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-sky-400/10 rounded-full blur-[120px]" />
-                <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-[100px] -mr-48 -mt-48" />
-            </section>
+        <div className="p-6 max-w-7xl mx-auto space-y-6 animate-in fade-in duration-500 font-outfit h-[calc(100vh-120px)] flex flex-col">
+            {/* Nav Tabs */}
+            <div className="flex items-center gap-1 p-1 bg-slate-100/50 rounded-2xl self-start mb-2 border border-slate-200/60 shadow-inner">
+                <button
+                    onClick={() => setView('chat')}
+                    className={`px-8 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${view === 'chat'
+                        ? 'bg-white text-brand-navy shadow-md'
+                        : 'text-slate-400 hover:text-brand-navy'}`}
+                >
+                    <Bot className="w-3.5 h-3.5" />
+                    Asistente Clínico
+                </button>
+                <button
+                    onClick={() => setView('predictions')}
+                    className={`px-8 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${view === 'predictions'
+                        ? 'bg-white text-brand-navy shadow-md'
+                        : 'text-slate-400 hover:text-brand-navy'}`}
+                >
+                    <Brain className="w-3.5 h-3.5" />
+                    Análisis Predictivo
+                </button>
+            </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                {/* Chat Interface */}
-                <div className="lg:col-span-2 flex flex-col h-[700px] p-10 rounded-[64px] bg-white border-4 border-zinc-50 shadow-2xl">
-                    <div className="flex items-center justify-between mb-8 border-b-2 border-dashed border-zinc-50 pb-6">
-                        <h3 className="text-xl font-black text-zinc-900 tracking-tighter flex items-center gap-4 uppercase">
-                            <span className="w-3 h-8 bg-[#0067b1] rounded-full"></span> Consola de Consulta
-                        </h3>
-                        <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest bg-emerald-50 px-4 py-2 rounded-2xl border border-emerald-100">Cifrado AES-256 Activo</span>
-                    </div>
-
-                    <div ref={scrollRef} className="flex-1 overflow-y-auto space-y-6 px-2 mb-8 custom-scrollbar">
-                        {messages.map((m, i) => (
-                            <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'} animate-slide-in-top`}>
-                                <div className={`max-w-[80%] p-6 rounded-[32px] shadow-lg ${m.role === 'user' ? 'bg-[#002b49] text-white rounded-tr-none' : 'bg-zinc-50 border-2 border-zinc-50 text-zinc-900 rounded-tl-none'}`}>
-                                    <p className="text-sm font-bold leading-relaxed">{m.content}</p>
-                                    <p className={`text-[8px] font-black mt-3 uppercase tracking-widest ${m.role === 'user' ? 'text-white/40' : 'text-zinc-400'}`}>{m.time}</p>
+            {view === 'chat' ? (
+                <div className="flex-1 flex flex-col gap-6 overflow-hidden">
+                    <div className="flex-1 admin-card bg-white border-slate-200 overflow-y-auto p-8 space-y-8 scrollbar-thin">
+                        {messages.map((msg, i) => (
+                            <div
+                                key={i}
+                                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-2 duration-300`}
+                            >
+                                <div className={`flex gap-4 max-w-[80%] ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
+                                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 border ${msg.role === 'user'
+                                        ? 'bg-slate-50 border-slate-200 text-brand-navy'
+                                        : 'bg-brand-navy border-brand-navy/10 text-white shadow-lg shadow-brand-navy/20'
+                                        }`}>
+                                        {msg.role === 'user' ? <User className="w-5 h-5" /> : <Bot className="w-5 h-5" />}
+                                    </div>
+                                    <div className={`p-5 rounded-3xl text-sm font-bold shadow-sm leading-relaxed ${msg.role === 'user'
+                                        ? 'bg-slate-50 border border-slate-200 text-brand-navy rounded-tr-none'
+                                        : 'bg-white border border-slate-100 text-slate-700 rounded-tl-none'
+                                        }`}>
+                                        {msg.content}
+                                    </div>
                                 </div>
                             </div>
                         ))}
-                        {isTyping && (
+                        {loading && (
                             <div className="flex justify-start animate-pulse">
-                                <div className="p-6 rounded-[32px] bg-zinc-50 border-2 border-zinc-50 flex gap-2">
-                                    <div className="w-2 h-2 bg-zinc-400 rounded-full"></div>
-                                    <div className="w-2 h-2 bg-zinc-400 rounded-full"></div>
-                                    <div className="w-2 h-2 bg-zinc-400 rounded-full"></div>
+                                <div className="flex gap-4">
+                                    <div className="w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center">
+                                        <Bot className="w-5 h-5 text-slate-300" />
+                                    </div>
+                                    <div className="bg-slate-50 h-12 w-32 rounded-3xl rounded-tl-none border border-slate-100" />
                                 </div>
                             </div>
                         )}
                     </div>
 
-                    <div className="space-y-6">
-                        <div className="flex flex-wrap gap-3">
-                            {queries.map((q, i) => (
-                                <button
-                                    key={i}
-                                    onClick={() => handleSend(q)}
-                                    className="px-6 py-3 rounded-2xl border-2 border-zinc-50 bg-zinc-50 hover:bg-white hover:border-[#0067b1] hover:shadow-xl transition-all text-[9px] font-black text-zinc-400 hover:text-[#0067b1] uppercase tracking-widest"
-                                >
-                                    {q}
-                                </button>
-                            ))}
-                        </div>
-                        <div className="relative group">
-                            <input
-                                type="text"
-                                value={input}
-                                onChange={(e) => setInput(e.target.value)}
-                                onKeyPress={(e) => e.key === 'Enter' && handleSend(input)}
-                                placeholder="Escribe aquí tu consulta de gestión..."
-                                className="w-full pl-10 pr-20 py-6 rounded-[32px] bg-zinc-50 border-4 border-transparent focus:bg-white focus:border-[#0067b1] outline-none font-bold transition-all text-zinc-900 shadow-inner"
-                            />
+                    <form onSubmit={handleSendMessage} className="relative admin-card p-3 bg-white border-slate-200 shadow-xl shadow-slate-100">
+                        <input
+                            type="text"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            placeholder="Consultar sobre protocolos, patologías o historial..."
+                            className="w-full pl-6 pr-40 py-5 bg-slate-50 border-2 border-slate-100 rounded-[24px] text-sm font-black text-brand-navy placeholder:text-slate-300 focus:border-brand-navy/20 focus:ring-8 focus:ring-brand-navy/5 outline-none transition-all"
+                        />
+                        <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                            <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest mr-2 group-focus-within:opacity-100 opacity-0 transition-opacity italic">Presione ENTER para enviar</span>
                             <button
-                                onClick={() => handleSend(input)}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 px-8 py-3.5 rounded-[22px] bg-[#0067b1] text-white font-black text-xs uppercase tracking-widest shadow-xl hover:bg-[#002b49] transition-all"
+                                type="submit"
+                                disabled={loading}
+                                className="bg-brand-navy text-white p-3.5 rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-brand-navy/20"
                             >
-                                Enviar
+                                <Send className="w-5 h-5" />
                             </button>
                         </div>
-                    </div>
+                    </form>
                 </div>
-
-                {/* Side Panels */}
-                <div className="space-y-8">
-                    {/* Insights */}
-                    <div className="p-10 rounded-[56px] border-4 border-[#0067b1]/10 bg-white shadow-2xl relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-[#0067b1]/5 rounded-full -mt-10 -mr-10 group-hover:scale-150 transition-transform" />
-                        <h3 className="text-xs font-black text-zinc-400 uppercase tracking-[0.3em] mb-8">Estrategia Semanal</h3>
-                        <div className="space-y-6">
-                            <div className="flex gap-4">
-                                <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-2xl border border-emerald-100">📈</div>
+            ) : (
+                <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 overflow-y-auto pr-2">
+                    <div className="lg:col-span-2 space-y-6">
+                        <div className="admin-card bg-white border-slate-200 p-8 space-y-8">
+                            <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-xs font-black text-zinc-900 uppercase tracking-widest">Optimización</p>
-                                    <p className="text-xs font-bold text-zinc-500 italic mt-1 leading-relaxed">Reforzar CAPS Zona Norte los días Martes para triaje preventivo.</p>
+                                    <h2 className="text-xl font-black text-brand-navy uppercase tracking-tight">Dashboard Clínico</h2>
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">IA Engine v4.2 - Última actualización: hace 5 min</p>
                                 </div>
+                                <Sparkles className="w-6 h-6 text-brand-accent animate-pulse" />
                             </div>
-                            <div className="flex gap-4">
-                                <div className="w-12 h-12 rounded-2xl bg-sky-500/10 flex items-center justify-center text-2xl border border-sky-100">🛰️</div>
-                                <div>
-                                    <p className="text-xs font-black text-zinc-900 uppercase tracking-widest">Digitalización</p>
-                                    <p className="text-xs font-bold text-zinc-500 italic mt-1 leading-relaxed">Avance 92% en firma digital para auditoría SAMIC.</p>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {predictions.map((pred, i) => (
+                                    <div key={i} className="p-6 bg-slate-50 rounded-[28px] border border-slate-100 flex flex-col items-center text-center gap-3 group hover:bg-white hover:border-brand-navy/20 transition-all duration-300">
+                                        <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm text-brand-navy group-hover:scale-110 transition-transform">
+                                            {pred.icon}
+                                        </div>
+                                        <div>
+                                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">{pred.title}</p>
+                                            <p className="text-xl font-black text-brand-navy uppercase tracking-tight">{pred.value}</p>
+                                        </div>
+                                        <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-full ${pred.trend === 'ascenso' ? 'bg-emerald-100 text-emerald-600' :
+                                            pred.trend === 'descenso' ? 'bg-blue-100 text-blue-600' : 'bg-slate-200 text-slate-600'
+                                            }`}>
+                                            {pred.trend}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="space-y-4">
+                                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2">
+                                    <LineChart className="w-3 h-3" />
+                                    Tendencias de Salud Poblacional
+                                </h3>
+                                <div className="h-64 bg-slate-50/50 rounded-[32px] border-2 border-dashed border-slate-100 flex items-center justify-center relative group">
+                                    <Activity className="w-12 h-12 text-slate-200 absolute group-hover:scale-150 group-hover:opacity-0 transition-all duration-700" />
+                                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest group-hover:text-brand-navy transition-colors">Visualización de Datos Médicos en tiempo real</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Radar de Riesgo */}
-                    <div className="p-10 rounded-[56px] bg-[#002b49] text-white shadow-2xl space-y-8">
-                        <h3 className="text-xs font-black uppercase tracking-[0.4em] text-sky-400">🚨 Radar Predictivo</h3>
-                        <div className="space-y-6">
-                            {alerts.map((alert) => (
-                                <div key={alert.id} className="p-6 rounded-[32px] bg-white/5 border-2 border-white/10 space-y-4 hover:bg-white/10 transition-all cursor-pointer">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-[8px] font-black uppercase bg-red-600 px-3 py-1 rounded-full">ALERTA CRÍTICA</span>
-                                        <span className="text-[9px] font-black text-white/40">AHORA</span>
+                    <div className="space-y-6">
+                        <div className="admin-card bg-brand-navy text-white p-8 space-y-6">
+                            <h3 className="text-lg font-black uppercase tracking-tight flex items-center gap-3">
+                                <Brain className="w-6 h-6 text-brand-accent" />
+                                Insights Recomendados
+                            </h3>
+                            <div className="space-y-4">
+                                {[
+                                    'Incremento del 12% en derivaciones dermatológicas',
+                                    'Patrón de reincidencia en pacientes crónicos identificado',
+                                    'Oportunidad de optimización en triaje de guardia'
+                                ].map((insight, i) => (
+                                    <div key={i} className="flex gap-4 items-start group">
+                                        <div className="w-2 h-2 rounded-full bg-brand-accent mt-2 group-hover:scale-150 transition-transform" />
+                                        <p className="text-[11px] font-bold opacity-80 leading-relaxed group-hover:opacity-100 transition-opacity italic">{insight}</p>
                                     </div>
-                                    <h4 className="font-black text-lg tracking-tight leading-none">{alert.center}</h4>
-                                    <div className="p-4 rounded-2xl bg-[#f9b000] text-[#002b49] font-black text-[10px] leading-relaxed uppercase tracking-widest">
-                                        "{alert.prediction}"
-                                    </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
+                            <button className="w-full py-4 bg-white/10 hover:bg-white/20 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">
+                                Exportar Reporte AI
+                            </button>
                         </div>
-                        <button className="w-full py-5 rounded-[24px] border-2 border-white/10 text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-[#002b49] transition-all">Reporte Completo IA</button>
+
+                        <div className="admin-card bg-white border-slate-200 p-8">
+                            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <History className="w-3.5 h-3.5" />
+                                Últimas Consultas
+                            </h3>
+                            <div className="space-y-4">
+                                {['Análisis de riesgo cardíaco', 'Protocolo dengue 2026', 'Resumen casos Guardia Central'].map((item, i) => (
+                                    <div key={i} className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100 hover:border-brand-navy/20 cursor-pointer group transition-all">
+                                        <span className="text-[10px] font-black text-brand-navy uppercase tracking-tight">{item}</span>
+                                        <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-brand-navy transition-all" />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
         </div>
-    );
+    )
 }

@@ -25,11 +25,10 @@ export default function RootLayout({
         {/* Top Accent Bar */}
         <div className="h-1 w-full bg-[#f9b000] sticky top-0 z-[100]" />
 
+
         <AuthWrapper>
           {children}
         </AuthWrapper>
-
-        <Onboarding />
       </body>
     </html>
   );
