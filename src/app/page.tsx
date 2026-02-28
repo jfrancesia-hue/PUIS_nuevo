@@ -143,12 +143,12 @@ export default function Home() {
   );
 
   const statusModulos = [
-    { name: "Ficha Unificada", status: "REAL", detail: "Conectado a Nodo Central", color: "text-emerald-500", icon: <Database className="w-4 h-4" /> },
-    { name: "Repositorio Digital", status: "REAL", detail: "Storage Operativo 100%", color: "text-emerald-500", icon: <CheckCircle2 className="w-4 h-4" /> },
-    { name: "Gestión de Turnos", status: "REAL", detail: "Agendas Sincronizadas", color: "text-emerald-500", icon: <Clock className="w-4 h-4" /> },
-    { name: "Bandeja Central", status: "REAL", detail: "Distribución Activa", color: "text-emerald-500", icon: <Inbox className="w-4 h-4" /> },
-    { name: "Semáforo Gestión", status: "PARCIAL", detail: "Indicadores en despliegue", color: "text-amber-500", icon: <Activity className="w-4 h-4" /> },
-    { name: "Asistente IA", status: "PROTOTIPO", detail: "Motor de inferencia en v4.2", color: "text-slate-400", icon: <Bot className="w-4 h-4" /> },
+    { name: "Servidor Central", status: "OPERATIVO", detail: "Uptime Mensual 99.9%", color: "text-emerald-500", icon: <Database className="w-4 h-4" /> },
+    { name: "Motor Base de Datos", status: "SINCRONIZADO", detail: "Réplica Activa (Latencia <12ms)", color: "text-emerald-500", icon: <CheckCircle2 className="w-4 h-4" /> },
+    { name: "Nodos Hospitalarios", status: "ONLINE", detail: "14 Hospitales Conectados", color: "text-emerald-500", icon: <Activity className="w-4 h-4" /> },
+    { name: "API RENAPER / SISA", status: "OPERATIVO", detail: "Validación de Identidad Activa", color: "text-emerald-500", icon: <Globe className="w-4 h-4" /> },
+    { name: "Cola de Mensajes", status: "ESTABLE", detail: "Distribución de Notificaciones", color: "text-emerald-500", icon: <Inbox className="w-4 h-4" /> },
+    { name: "Motor Analítico IA", status: "PROTOTIPO", detail: "Inferencia V4.2 (Pruebas)", color: "text-amber-500", icon: <Bot className="w-4 h-4" /> },
   ];
 
   return (
