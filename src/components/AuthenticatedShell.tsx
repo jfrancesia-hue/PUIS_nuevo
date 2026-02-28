@@ -3,6 +3,7 @@
 import Navigation from "./Navigation";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { Home, FileText, Calendar } from "lucide-react";
 
 export default function AuthenticatedShell({ children }: { children: React.ReactNode }) {
     const [profile, setProfile] = useState<any>(null);
@@ -39,13 +40,13 @@ export default function AuthenticatedShell({ children }: { children: React.React
             <header className="bg-brand-navy text-white shadow-sm sticky top-0 z-[50]">
                 <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-6">
-                        {/* Burger Trigger */}
+                        {/* Burger Trigger (Hidden on mobile since we have bottom bar) */}
                         <button
                             onClick={() => {
                                 const navBtn = document.querySelector('button[id="puis-nav-trigger"]');
                                 if (navBtn) (navBtn as HTMLElement).click();
                             }}
-                            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                            className="hidden md:block p-2 hover:bg-white/10 rounded-lg transition-colors"
                         >
                             <svg className="w-6 h-6 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -119,7 +120,7 @@ export default function AuthenticatedShell({ children }: { children: React.React
             </main>
 
             {/* Global Footer */}
-            <footer className="bg-white border-t mt-auto">
+            <footer className="bg-white border-t mt-auto mb-16 md:mb-0">
                 <div className="max-w-7xl mx-auto px-8 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
                     <div className="flex items-center gap-3">
                         <img src="/brand/logo-ministerio.png" className="h-6 object-contain opacity-40 grayscale" alt="" />
@@ -132,6 +133,22 @@ export default function AuthenticatedShell({ children }: { children: React.React
                     </div>
                 </div>
             </footer>
+
+            {/* Mobile Bottom Navigation (Visible only on small screens) */}
+            <div className="md:hidden fixed bottom-0 left-0 right-0 bg-brand-navy border-t border-white/10 flex items-center justify-around h-16 z-[60]">
+                <Link href="/" className="flex flex-col items-center justify-center w-full h-full text-white/70 hover:text-white transition-colors">
+                    <Home className="w-5 h-5 mb-1" />
+                    <span className="text-[9px] font-bold uppercase tracking-widest">Inicio</span>
+                </Link>
+                <Link href="/ficha-unificada" className="flex flex-col items-center justify-center w-full h-full text-white/70 hover:text-white transition-colors">
+                    <FileText className="w-5 h-5 mb-1" />
+                    <span className="text-[9px] font-bold uppercase tracking-widest">Ficha</span>
+                </Link>
+                <Link href="/turnos" className="flex flex-col items-center justify-center w-full h-full text-white/70 hover:text-white transition-colors">
+                    <Calendar className="w-5 h-5 mb-1" />
+                    <span className="text-[9px] font-bold uppercase tracking-widest">Turnos</span>
+                </Link>
+            </div>
         </div>
     );
 }
